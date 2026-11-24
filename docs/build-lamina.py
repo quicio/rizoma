@@ -6,10 +6,10 @@ exploración y las colecciones con --sync. La anotación editorial (posiciones,
 citas, corte, blanco, colofón) vive en lamina-01.annotations.yml.
 
 Uso:
-    python3 docs/rizoma/build-lamina.py --sync
-    python3 docs/rizoma/build-lamina.py --check
-    python3 docs/rizoma/build-lamina.py --verify
-    python3 docs/rizoma/build-lamina.py --write
+    python3 docs/build-lamina.py --sync
+    python3 docs/build-lamina.py --check
+    python3 docs/build-lamina.py --verify
+    python3 docs/build-lamina.py --write
 """
 
 from __future__ import annotations
@@ -17,6 +17,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+import os
 import unicodedata
 from datetime import date, datetime
 from html import escape
@@ -24,23 +25,24 @@ from pathlib import Path
 
 import yaml
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[1]
+KNDL_ROOT = Path(os.environ.get("KNDL_ROOT", ROOT.parent / "kndl000")).resolve()
 PLATES = {
     "01": {
-        "exploracion": ROOT / "content/collections/_exploraciones/que-se-conserva-cuando-algo-se-repite.md",
-        "data": ROOT / "docs/rizoma/lamina-01.data.yml",
-        "annotations": ROOT / "docs/rizoma/lamina-01.annotations.yml",
-        "html": ROOT / "docs/rizoma/lamina-01-svg.html",
-        "svg": ROOT / "docs/rizoma/lamina-01.svg",
-        "site_svg": ROOT / "assets/media/rizoma/lamina-01.svg",
+        "exploracion": ROOT / "src/content/exploraciones/que-se-conserva-cuando-algo-se-repite.md",
+        "data": ROOT / "docs/lamina-01.data.yml",
+        "annotations": ROOT / "docs/lamina-01.annotations.yml",
+        "html": ROOT / "docs/lamina-01-svg.html",
+        "svg": ROOT / "docs/lamina-01.svg",
+        "site_svg": ROOT / "public/rizoma/lamina-01.svg",
     },
     "02": {
-        "exploracion": ROOT / "content/collections/_exploraciones/archivo.md",
-        "data": ROOT / "docs/rizoma/lamina-02.data.yml",
-        "annotations": ROOT / "docs/rizoma/lamina-02.annotations.yml",
-        "html": ROOT / "docs/rizoma/lamina-02-svg.html",
-        "svg": ROOT / "docs/rizoma/lamina-02.svg",
-        "site_svg": ROOT / "assets/media/rizoma/lamina-02.svg",
+        "exploracion": ROOT / "src/content/exploraciones/archivo.md",
+        "data": ROOT / "docs/lamina-02.data.yml",
+        "annotations": ROOT / "docs/lamina-02.annotations.yml",
+        "html": ROOT / "docs/lamina-02-svg.html",
+        "svg": ROOT / "docs/lamina-02.svg",
+        "site_svg": ROOT / "public/rizoma/lamina-02.svg",
     },
 }
 DEFAULT_PLATE = "01"
@@ -60,7 +62,7 @@ SERIF = "'Newsreader', Georgia, serif"
 MONO = "'JetBrains Mono', ui-monospace, monospace"
 
 # Las láminas están retiradas de la publicación hasta que la sección madure.
-# --write sigue generando los artefactos internos en docs/rizoma/, pero no
+# --write sigue generando los artefactos internos en docs/, pero no
 # escribe páginas ni SVG en el sitio. Cambiar a True para volver a publicarlas.
 PUBLICAR_LAMINAS = False
 
@@ -119,7 +121,7 @@ def num_word(value: int) -> str:
 def collection_works() -> dict:
     works = {}
     for prefix, (folder, tipo, glyph) in KINDS.items():
-        for path in sorted((ROOT / "content/collections" / folder).glob("*.md")):
+        for path in sorted((KNDL_ROOT / "content/collections" / folder).glob("*.md")):
             fm = read_frontmatter(path)
             if fm.get("published") is False:
                 continue
@@ -135,7 +137,7 @@ def collection_works() -> dict:
 
 
 def all_explorations():
-    for path in sorted((ROOT / "content/collections/_exploraciones").glob("*.md")):
+    for path in sorted((ROOT / "src/content/exploraciones").glob("*.md")):
         fm = read_frontmatter(path)
         if fm.get("published") is False:
             continue

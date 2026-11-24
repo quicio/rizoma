@@ -27,7 +27,7 @@ terminar hablando de otra cosa.
   dos cuerpos con sentido distinto. Hay cinco nodos compartidos entre 01 y 02.
 - **Aparato**: anexos agrupados por tipo —corrección, fuente, concepto,
   objeción, derivación—. Hoy hay tres correcciones y una objeción.
-- **Láminas**: retiradas de la publicación; los artefactos internos quedan en `docs/rizoma/`.
+- **Láminas**: retiradas de la publicación; los artefactos internos quedan en `docs/`.
 
 ## Cómo se trabaja
 
@@ -44,7 +44,7 @@ Roles:
 Ciclo:
 
 1. Intuición o pregunta.
-2. Nota en el banco de trabajo (`docs/rizoma/`), no en el sitio.
+2. Nota en el banco de trabajo (`docs/`), no en el sitio.
 3. Si sobrevive, rastro o exploración.
 4. Si conecta, nodo.
 5. Si hay una obra que la sostiene, corpus.
@@ -66,7 +66,7 @@ Reglas:
 - **Las referencias de sección usan `§N` y un ancla por título**, no por número.
   Ver ADR 0002.
 - **Lo público es el mapa; el taller es el proceso.** Las notas, los ADR y los
-  descartes viven en `docs/rizoma/`; el sitio muestra exploraciones, nodos,
+  descartes viven en `docs/`; el sitio muestra exploraciones, nodos,
   corpus, anexos, láminas e historial.
 
 ## Decisiones
@@ -80,6 +80,7 @@ Reglas:
 | [0005](adr/ADR-0005-historial-y-hitos.md) | Historial: versiones de Git y hitos curados, sin fingir prosa. |
 | [0006](adr/ADR-0006-taller-de-rizoma.md) | Taller de Rizoma local-first: banco, adjuntos, vínculos y promoción con diff + commit. |
 | [0007](adr/ADR-0007-trama-composicion-cartografia.md) | Trama, composición y cartografía: piloto B3.1.1, no normativo fuera del piloto. |
+| [0008](adr/ADR-0008-extraccion-de-rizoma.md) | Extracción a repo Astro independiente, embebido en kndl por artefacto estático. |
 
 ## Nueva exploración
 
@@ -91,9 +92,9 @@ node scripts/nueva-exploracion.mjs \
 
 El scaffold crea:
 
-- `content/collections/_exploraciones/<slug>.md` con el frontmatter mínimo, un
+- `src/content/exploraciones/<slug>.md` con el frontmatter mínimo, un
   hito inicial y dos secciones con anclas.
-- `docs/rizoma/ciclos/<fecha>-<slug>.md` con la pregunta, el material por
+- `docs/ciclos/<fecha>-<slug>.md` con la pregunta, el material por
   completar y las decisiones.
 
 No crea nodos, corpus, anexos ni relaciones: eso se agrega cuando existe. Después:
@@ -103,14 +104,14 @@ No crea nodos, corpus, anexos ni relaciones: eso se agrega cuando existe. Despu�
 3. Agregá nodos solo cuando la palabra aparezca en dos cuerpos.
 4. Si hay una fuente, un concepto, una objeción o una derivación, abrí un anexo
    con su tipo.
-5. `bundle exec jekyll build` y `node scripts/check-links.mjs`.
+5. `npm run build` y `npm run links`.
 6. El autor decide si se publica; después, commit y push.
 
 ## Lámina
 
 **Estado 2026-11-15:** las láminas se retiraron de la publicación hasta que la
 sección madure. Los artefactos (`lamina-*.data.yml`, `annotations`, SVG, PNG) se
-conservan en `docs/rizoma/` como material interno. `--write` ya no escribe
+conservan en `docs/` como material interno. `--write` ya no escribe
 páginas ni SVG del sitio (`PUBLICAR_LAMINAS = False`). El generador y
 `--verify` quedan como herramienta para cuando se retome.
 
@@ -135,31 +136,33 @@ sitio, pero deja visible el desfase.
 ## Comandos
 
 ```bash
-bundle exec jekyll build          # construir el sitio
-node scripts/check-links.mjs      # verificar enlaces internos
-node scripts/nueva-exploracion.mjs --help
-python3 docs/rizoma/build-lamina.py --sync    # esqueleto desde la exploración
-python3 docs/rizoma/build-lamina.py --check   # fechas, corpus y nodos
-python3 docs/rizoma/build-lamina.py --verify  # recalcula en memoria y compara
-python3 docs/rizoma/build-lamina.py --write   # HTML, página y SVG
+npm run build                     # construir el sitio Astro
+npm run links                     # verificar enlaces internos
+npm run nueva -- --help
+python3 docs/build-lamina.py --sync    # esqueleto desde la exploración
+python3 docs/build-lamina.py --check   # fechas, corpus y nodos
+python3 docs/build-lamina.py --verify  # recalcula en memoria y compara
+python3 docs/build-lamina.py --write   # HTML, página y SVG
 # la 02 usa los mismos comandos con --plate 02
 ```
 
 ## Mapa de archivos
 
-- `content/collections/_exploraciones/` — exploraciones públicas.
-- `content/collections/_nodos/` — vocabulario compartido.
-- `content/collections/_fragmentos/` — Rastros.
-- `docs/rizoma/protocolo-cartografia.md` — roles, estados, instrumentos.
-- `docs/rizoma/taxonomia-anexos.md` — tipos y estándares de anexo.
-- `docs/rizoma/adr/` — decisiones durables.
-- `docs/rizoma/lectura-01.md` — banco de lectura de la 01.
-- `docs/rizoma/nota-diagram-design.md` — pipeline de las láminas.
-- `docs/rizoma/lamina-01.data.yml` y `lamina-02.data.yml` — esqueletos generados.
-- `docs/rizoma/lamina-01.annotations.yml` y `lamina-02.annotations.yml` — posiciones, citas, corte, blanco.
-- `docs/rizoma/build-lamina.py` — generador; `--plate 01|02`.
-- `docs/rizoma/ciclos/` — notas de cada vuelta.
-- `_layouts/anexo.html`, `_layouts/anexos.html`, `_layouts/exploracion.html` — superficies.
+- `src/content/exploraciones/` — exploraciones públicas.
+- `src/content/nodos/` — vocabulario compartido.
+- `content/collections/_fragmentos/` — Rastros (vive en kndl000, no en este repo).
+- `docs/protocolo-cartografia.md` — roles, estados, instrumentos.
+- `docs/taxonomia-anexos.md` — tipos y estándares de anexo.
+- `docs/adr/` — decisiones durables.
+- `docs/lectura-01.md` — banco de lectura de la 01.
+- `docs/nota-diagram-design.md` — pipeline de las láminas.
+- `docs/lamina-01.data.yml` y `lamina-02.data.yml` — esqueletos generados.
+- `docs/lamina-01.annotations.yml` y `lamina-02.annotations.yml` — posiciones, citas, corte, blanco.
+- `docs/build-lamina.py` — generador; `--plate 01|02`.
+- `docs/ciclos/` — notas de cada vuelta.
+- `src/pages/` — rutas Astro; `src/components/` — mapa, diagrama, corpus y respiros.
+- `src/lib/` — carga de markdown, presentación, trayectoria e historial.
+- `docs/adr/ADR-0008-extraccion-de-rizoma.md` — decisión de extracción y modo embebido.
 
 ## Decisiones abiertas
 

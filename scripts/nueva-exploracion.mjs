@@ -13,15 +13,15 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 
 import { dirname, join } from "node:path";
 
 const ROOT = process.cwd();
-const EXPLORACIONES = join(ROOT, "content/collections/_exploraciones");
-const CICLOS = join(ROOT, "docs/rizoma/ciclos");
+const EXPLORACIONES = join(ROOT, "src/content/exploraciones");
+const CICLOS = join(ROOT, "docs/ciclos");
 
 function usage() {
   console.log(`Uso:
   node scripts/nueva-exploracion.mjs --title "Título" --question "¿Pregunta?" [--slug slug] [--dry-run] [--no-note]
 
-Crea content/collections/_exploraciones/<slug>.md y, salvo --no-note,
-docs/rizoma/ciclos/<fecha>-<slug>.md.`);
+Crea src/content/exploraciones/<slug>.md y, salvo --no-note,
+docs/ciclos/<fecha>-<slug>.md.`);
 }
 
 function parseArgs(argv) {
@@ -72,7 +72,6 @@ const q = (value) => JSON.stringify(String(value));
 
 function explorationDoc({ title, question, order, date }) {
   return `---
-layout: exploracion
 title: ${q(title)}
 question: ${q(question)}
 order: "${order}"
@@ -173,8 +172,8 @@ console.log(`URL: /rizoma/${slug}/`);
 console.log(`Orden: ${order} · fecha: ${date}`);
 console.log(`
 Próximos pasos:
-  1. Leé docs/rizoma/PUNTO-DE-ENTRADA.md si es una sesión nueva.
+  1. Leé docs/PUNTO-DE-ENTRADA.md si es una sesión nueva.
   2. Escribí la pregunta y la primera sección del cuerpo.
   3. Agregá corpus/nodos/anexos solo cuando existan.
-  4. bundle exec jekyll build && node scripts/check-links.mjs
+  4. npm run build && npm run links
 `);

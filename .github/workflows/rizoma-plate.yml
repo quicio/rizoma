@@ -1,0 +1,36 @@
+name: Rizoma plate
+
+# Verifica que el esqueleto, la anotación y la fecha de la lámina sigan
+# sincronizados. No bloquea el deploy del sitio: es un chequeo aparte.
+# Las obras del corpus viven en kndl000; se checkoutea para resolverlas.
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "src/content/exploraciones/**"
+      - "src/content/nodos/**"
+      - "docs/lamina-*.yml"
+      - "docs/build-lamina.py"
+      - ".github/workflows/rizoma-plate.yml"
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6
+        with:
+          repository: hugomoraga/kndl000
+          path: kndl000
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python3 -m pip install --quiet pyyaml
+      - name: Verify plate 01
+        env:
+          KNDL_ROOT: ${{ github.workspace }}/kndl000
+        run: python3 docs/build-lamina.py --verify --plate 01
+      - name: Verify plate 02
+        env:
+          KNDL_ROOT: ${{ github.workspace }}/kndl000
+        run: python3 docs/build-lamina.py --verify --plate 02
