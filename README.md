@@ -78,14 +78,13 @@ y la taxonomía de anexos. La decisión de extracción está en
 Desde kndl000:
 
 ```bash
-bundle exec jekyll build
 bash scripts/build-rizoma.sh          # RIZOMA_DIR=../rizoma por defecto
 node scripts/check-links.mjs
 ```
 
-El script construye este repo con `RIZOMA_BASE=/rizoma` y copia `dist/` en
-`_site/rizoma/`. En CI, kndl hace checkout de este repositorio antes de correr el
-script.
+El script construye este repo con `RIZOMA_BASE=/rizoma`, actualiza
+`_data/rizoma_index.json`, construye Jekyll y copia `dist/` en `_site/rizoma/`.
+En CI, kndl hace checkout de este repositorio antes de correr el script.
 
 ## Desplegar solo
 
