@@ -5,7 +5,7 @@ import yaml from 'js-yaml';
 import { dateString, type Doc, type ExploracionData } from './content';
 
 const ROOT = process.cwd();
-const REPO = process.env.RIZOMA_REPO || 'hugomoraga/rizoma';
+const REPO = process.env.RIZOMA_REPO || 'quicio/rizoma';
 
 function git(args: string[]): string | undefined {
   try {

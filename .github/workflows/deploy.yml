@@ -31,7 +31,7 @@ jobs:
 
       - name: Build
         env:
-          RIZOMA_SITE: ${{ vars.RIZOMA_SITE || 'https://hugomoraga.github.io' }}
+          RIZOMA_SITE: ${{ vars.RIZOMA_SITE || 'https://quicio.github.io' }}
           RIZOMA_BASE: ${{ vars.RIZOMA_BASE || '/rizoma' }}
           RIZOMA_KNDL_ORIGIN: ${{ vars.RIZOMA_KNDL_ORIGIN || 'https://kndl.quicio.qzz.io' }}
           PUBLIC_GA4_ID: ${{ vars.PUBLIC_GA4_ID }}

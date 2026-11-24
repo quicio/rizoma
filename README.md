@@ -4,6 +4,8 @@ Sitio independiente de **Rizoma**, la sección de exploraciones abiertas de
 [KNDL 000](https://kndl.quicio.qzz.io). Construido con [Astro](https://astro.build)
 y markdown. Se puede desplegar solo o embeber en kndl000 en `/rizoma/`.
 
+Repositorio: [`quicio/rizoma`](https://github.com/quicio/rizoma).
+
 ## Empezar
 
 ```bash
@@ -91,7 +93,8 @@ En CI, kndl hace checkout de este repositorio antes de correr el script.
 El workflow `.github/workflows/deploy.yml` construye y publica en GitHub Pages.
 Configurá las variables del repositorio:
 
-- `RIZOMA_SITE`: origen canónico (por defecto `https://kndl.quicio.qzz.io`).
+- `RIZOMA_SITE`: origen canónico (por defecto `https://quicio.github.io`). En el
+  build embebido, kndl pasa `https://kndl.quicio.qzz.io`.
 - `RIZOMA_BASE`: `/rizoma` para project page; `/` para dominio propio.
 - `RIZOMA_KNDL_ORIGIN`: `https://kndl.quicio.qzz.io` para enlazar el corpus.
 - `PUBLIC_GA4_ID`: opcional.
