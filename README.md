@@ -56,6 +56,7 @@ src/
   pages/             # rutas: /, /nodos/, /[slug]/, /[slug]/anexos/..., /trayectoria/[id]/
   styles/style.css   # copia vendorizada de kndl000 (deuda: recortar)
 docs/                # ADR, ciclos, trama, cartografías, láminas, protocolo
+taller/              # backoffice local-first (npm run taller)
 scripts/             # nueva-exploracion, check-links
 public/              # JS de rizoma-apparatus y rail-progress
 ```
@@ -103,6 +104,7 @@ Configurá las variables del repositorio:
 
 - Las láminas siguen retiradas de la publicación. `docs/build-lamina.py`
   verifica con `KNDL_ROOT` apuntando a un checkout de kndl000.
-- El taller (`taller/`) quedó en kndl000: indexa todas las colecciones del
-  sitio, no solo Rizoma. Adaptarlo es trabajo pendiente.
+- El taller vive en `taller/` y se inicia con `npm run taller`
+  (http://127.0.0.1:4173). Indexa `src/content/` y `docs/`; las obras de KNDL
+  se referencian por URL desde `src/data/kndl-materiales.yml`.
 - El CSS es una copia de kndl000. Hay que extraer solo los bloques de Rizoma.

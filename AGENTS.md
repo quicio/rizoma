@@ -7,6 +7,7 @@ contexto; los ADR son la fuente de las decisiones.
 - No corrijas en silencio: toda rectificación deja un anexo con fuente.
 - No promuevas una idea al cuerpo sin la marca del autor.
 - Abrí una deriva con `npm run nueva -- --title "..." --question "..."`.
+- El taller local se inicia con `npm run taller` (http://127.0.0.1:4173).
 - Antes de cerrar: `npm run build`, `npm run links` y, si tocaste láminas,
   `python3 docs/build-lamina.py --verify --plate 01` y `--plate 02` con
   `KNDL_ROOT` apuntando a kndl000.
