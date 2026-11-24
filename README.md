@@ -4,6 +4,7 @@ Sitio independiente de **Rizoma**, la sección de exploraciones abiertas de
 [KNDL 000](https://kndl.quicio.qzz.io). Construido con [Astro](https://astro.build)
 y markdown. Se puede desplegar solo o embeber en kndl000 en `/rizoma/`.
 
+Sitio: **https://quicio.github.io/rizoma/**
 Repositorio: [`quicio/rizoma`](https://github.com/quicio/rizoma).
 
 ## Empezar
