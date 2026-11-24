@@ -18,7 +18,7 @@ export function notebookDoc({ title, pregunta, date }) {
 export default {
   id: "nueva-nota",
   label: "Nueva nota",
-  description: "Crea solo una nota de trabajo en docs/banco/.",
+  description: "Crea solo una nota de trabajo en trabajo/banco/.",
   fields: [
     { name: "title", label: "Título", type: "text", required: true },
     { name: "pregunta", label: "Pregunta", type: "textarea" },
@@ -37,7 +37,7 @@ export default {
       validations.push(validation("date", false, "La fecha debe ser YYYY-MM-DD.", { field: "date" }));
     }
 
-    const path = `docs/banco/${date}-${slug}.md`;
+    const path = `trabajo/banco/${date}-${slug}.md`;
     if (existsSync(join(ctx.root, path))) {
       validations.push(
         validation("exists", false, `Ya existe: ${path}. Elegí otro slug o fecha.`, {

@@ -161,13 +161,13 @@ test("auditoría de nota detecta adjunto faltante y nodo con menos de dos cuerpo
   try {
     write(
       root,
-      "docs/nota.md",
+      "trabajo/nota.md",
       `---
 title: "Nota"
 date: 2026-11-14
 estado: banco
 adjuntos:
-  - archivo: docs/adjuntos/nota/falta.pdf
+  - archivo: trabajo/adjuntos/nota/falta.pdf
     titulo: "Falta"
 ---
 Cuerpo.
@@ -179,7 +179,7 @@ Cuerpo.
       "---\ntitle: Solo\norder: \"02\"\ndefinition: \"Una vez\"\n---\n"
     );
     const ctx = await context(root);
-    const noteAudit = runAudit(ctx, ["docs/nota.md"]);
+    const noteAudit = runAudit(ctx, ["trabajo/nota.md"]);
     assert.equal(noteAudit.validations[0].ok, false);
     assert.ok(noteAudit.validations[0].detail.some((item) => item.includes("Falta el archivo adjunto")));
 

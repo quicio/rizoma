@@ -29,9 +29,9 @@ export default {
         })
       );
     }
-    if (!archivo.startsWith("docs/adjuntos/")) {
+    if (!archivo.startsWith("trabajo/adjuntos/")) {
       validations.push(
-        validation("archivo", false, "Solo se borran adjuntos de docs/adjuntos/.", {
+        validation("archivo", false, "Solo se borran adjuntos de trabajo/adjuntos/.", {
           field: "archivo"
         })
       );

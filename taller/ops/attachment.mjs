@@ -63,7 +63,7 @@ export async function planAttachment(ctx, input) {
 
   const filename = sanitizeFilename(rawName);
   const noteSlug = source ? basename(source.path, ".md") : "sin-nota";
-  const directory = `docs/adjuntos/${noteSlug}`;
+  const directory = `trabajo/adjuntos/${noteSlug}`;
   const absDirectory = join(ctx.root, directory);
   const unique = existsSync(absDirectory) ? uniqueFilename(absDirectory, filename) : filename;
   const archivo = `${directory}/${unique}`;

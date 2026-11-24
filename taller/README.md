@@ -2,7 +2,8 @@
 
 Backoffice local-first para el banco de Rizoma. Lee y escribe los mismos archivos
 que el sitio Astro: exploraciones y nodos en `src/content/`, anexos en
-`src/content/anexos/`, y notas, ciclos, ADR y adjuntos en `docs/`. No hay base de
+`src/content/anexos/`, y notas, ciclos y adjuntos en `trabajo/`. `docs/` se
+indexa como referencia read-only (ADR, protocolo, taxonomía). No hay base de
 datos, backend remoto ni estado fuera de git. La decisión está en
 [`ADR-0006`](../docs/adr/ADR-0006-taller-de-rizoma.md).
 
@@ -25,7 +26,7 @@ TALLER_PORT=4174 npm run taller
 
 ## Qué hace
 
-- **Banco**: indexa notas (`docs/*.md`, `docs/banco/`, `docs/ciclos/`),
+- **Banco**: indexa notas (`trabajo/**/*.md`, `trabajo/banco/`, `trabajo/ciclos/`),
   exploraciones (`src/content/exploraciones/`), nodos (`src/content/nodos/`) y
   anexos (`src/content/anexos/<exploración>/`). Los ADR, el protocolo, la
   taxonomía y el punto de entrada se listan read-only. Los poemas, códigos,
@@ -41,7 +42,7 @@ TALLER_PORT=4174 npm run taller
   recuerda la elección en `localStorage`.
 - **Apply transaccional**: snapshots de los paths afectados; si un cambio falla,
   se restauran los anteriores y se eliminan los archivos nuevos.
-- **Adjuntos**: se guardan en `docs/adjuntos/<slug>/` con límite de 25 MB,
+- **Adjuntos**: se guardan en `trabajo/adjuntos/<slug>/` con límite de 25 MB,
   nombre sanitizado y deduplicado. Se sirven read-only.
 - **Vínculos**: lista `{destino, motivo, fecha}` en el frontmatter de la nota.
   Los destinos se autocompletan por título, path o URL. Los backlinks se calculan

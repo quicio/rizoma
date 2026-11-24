@@ -198,7 +198,7 @@ export function loadComposiciones(): Composición[] {
 }
 
 export function loadTrama() {
-  const files = loadYamlDir<any>('docs/trama');
+  const files = loadYamlDir<any>('src/data/trama');
   const merged = { frentes: [] as any[], inscripciones: [] as any[] };
   for (const data of files) {
     merged.frentes.push(...(Array.isArray(data.frentes) ? data.frentes : []));
@@ -208,7 +208,7 @@ export function loadTrama() {
 }
 
 export function loadCartografias() {
-  return loadYamlDir<any>('docs/cartografias').filter((item) => item.publicar !== false);
+  return loadYamlDir<any>('src/data/cartografias').filter((item) => item.publicar !== false);
 }
 
 function stateLabel(value: unknown): string {

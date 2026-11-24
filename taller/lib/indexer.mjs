@@ -235,10 +235,10 @@ export function buildIndex(root, registry) {
         entry.warnings.push({ id: "adjunto-forma", message: "Hay un adjunto sin archivo." });
         continue;
       }
-      if (!String(archivo).startsWith("docs/adjuntos/")) {
+      if (!String(archivo).startsWith("trabajo/adjuntos/")) {
         entry.warnings.push({
           id: "adjunto-fuera",
-          message: `Adjunto fuera de docs/adjuntos/: ${archivo}`
+          message: `Adjunto fuera de trabajo/adjuntos/: ${archivo}`
         });
       } else if (!existsSync(join(root, String(archivo)))) {
         entry.warnings.push({

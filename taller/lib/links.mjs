@@ -47,7 +47,7 @@ export function resolveDestino(root, sourcePath, destino) {
     return { kind: "internal", path: mapped, url: clean, exists: existsSync(abs) };
   }
 
-  const isRepoRelative = ["docs/", "src/"].some((prefix) => clean.startsWith(prefix));
+  const isRepoRelative = ["docs/", "src/", "trabajo/"].some((prefix) => clean.startsWith(prefix));
   const relativePath = isRepoRelative
     ? normalize(clean).replaceAll("\\", "/")
     : normalize(join(dirname(sourcePath), clean)).replaceAll("\\", "/");

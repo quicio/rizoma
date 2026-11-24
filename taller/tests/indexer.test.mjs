@@ -18,7 +18,7 @@ function fixture() {
   const root = mkdtempSync(join(tmpdir(), "taller-index-"));
   write(
     root,
-    "docs/nota.md",
+    "trabajo/nota.md",
     `---
 title: "Nota de trabajo"
 date: 2026-11-14
@@ -33,7 +33,7 @@ Cuerpo de la nota.
   );
   write(
     root,
-    "docs/rota.md",
+    "trabajo/rota.md",
     `---
 title: "Nota con vínculo roto"
 date: 2026-11-14
@@ -45,15 +45,15 @@ vinculos:
 Cuerpo.
 `
   );
-  write(root, "docs/sin-fecha.md", "---\ntitle: \"Sin fecha\"\n---\n\nCuerpo.\n");
+  write(root, "trabajo/sin-fecha.md", "---\ntitle: \"Sin fecha\"\n---\n\nCuerpo.\n");
   write(
     root,
-    "docs/banco/2026-11-14-prueba.md",
+    "trabajo/banco/2026-11-14-prueba.md",
     "---\ntitle: \"Prueba\"\ndate: 2026-11-14\nestado: banco\n---\n\nCuerpo.\n"
   );
   write(
     root,
-    "docs/ciclos/2026-11-14-a.md",
+    "trabajo/ciclos/2026-11-14-a.md",
     "---\ntitle: \"Ciclo\"\ndate: 2026-11-14\nexploracion: /rizoma/a/\n---\n\nCuerpo.\n"
   );
   write(
@@ -138,10 +138,10 @@ test("indexa notas, exploraciones, nodos, anexos y documentos read-only", async 
     const protocol = index.entries.find((entry) => entry.path === "docs/protocolo-cartografia.md");
     assert.equal(protocol.readOnly, true);
 
-    const missingDate = index.entries.find((entry) => entry.path === "docs/sin-fecha.md");
+    const missingDate = index.entries.find((entry) => entry.path === "trabajo/sin-fecha.md");
     assert.ok(missingDate.warnings.some((warning) => warning.id === "campo-obligatorio"));
 
-    const broken = index.entries.find((entry) => entry.path === "docs/rota.md");
+    const broken = index.entries.find((entry) => entry.path === "trabajo/rota.md");
     assert.ok(broken.warnings.some((warning) => warning.id === "vinculo-roto"));
   } finally {
     rmSync(root, { recursive: true, force: true });
@@ -156,7 +156,7 @@ test("readItem calcula backlinks escaneando notas", async () => {
     const item = readItem(root, index, "src/content/exploraciones/a.md");
     assert.ok(item);
     assert.equal(item.backlinks.length, 1);
-    assert.equal(item.backlinks[0].path, "docs/nota.md");
+    assert.equal(item.backlinks[0].path, "trabajo/nota.md");
     assert.equal(item.backlinks[0].motivo, "Conecta con la deriva");
   } finally {
     rmSync(root, { recursive: true, force: true });

@@ -58,7 +58,7 @@ export default {
         ),
         ...(item.attachments.length > 0
           ? [
-              `La nota tiene ${item.attachments.length} adjunto(s); los archivos quedan en docs/adjuntos/.`
+              `La nota tiene ${item.attachments.length} adjunto(s); los archivos quedan en trabajo/adjuntos/.`
             ]
           : []),
         ...(tracked ? [] : ["La nota no está versionada: se elimina del disco."])

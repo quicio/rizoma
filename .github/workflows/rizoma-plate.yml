@@ -9,8 +9,8 @@ on:
     paths:
       - "src/content/exploraciones/**"
       - "src/content/nodos/**"
-      - "docs/lamina-*.yml"
-      - "docs/build-lamina.py"
+      - "trabajo/laminas/lamina-*.yml"
+      - "scripts/build-lamina.py"
       - ".github/workflows/rizoma-plate.yml"
 
 jobs:
@@ -29,8 +29,8 @@ jobs:
       - name: Verify plate 01
         env:
           KNDL_ROOT: ${{ github.workspace }}/kndl000
-        run: python3 docs/build-lamina.py --verify --plate 01
+        run: python3 scripts/build-lamina.py --verify --plate 01
       - name: Verify plate 02
         env:
           KNDL_ROOT: ${{ github.workspace }}/kndl000
-        run: python3 docs/build-lamina.py --verify --plate 02
+        run: python3 scripts/build-lamina.py --verify --plate 02

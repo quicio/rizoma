@@ -88,7 +88,7 @@ export function findExploration(ctx, value) {
 
 export function attachmentPathFor(ctx, notePath, filename) {
   const slug = basename(notePath, ".md");
-  return `docs/adjuntos/${slug}/${filename}`;
+  return `trabajo/adjuntos/${slug}/${filename}`;
 }
 
 export function readText(root, path) {

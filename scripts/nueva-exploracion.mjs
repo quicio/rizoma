@@ -14,14 +14,14 @@ import { dirname, join } from "node:path";
 
 const ROOT = process.cwd();
 const EXPLORACIONES = join(ROOT, "src/content/exploraciones");
-const CICLOS = join(ROOT, "docs/ciclos");
+const CICLOS = join(ROOT, "trabajo/ciclos");
 
 function usage() {
   console.log(`Uso:
   node scripts/nueva-exploracion.mjs --title "Título" --question "¿Pregunta?" [--slug slug] [--dry-run] [--no-note]
 
 Crea src/content/exploraciones/<slug>.md y, salvo --no-note,
-docs/ciclos/<fecha>-<slug>.md.`);
+trabajo/ciclos/<fecha>-<slug>.md.`);
 }
 
 function parseArgs(argv) {

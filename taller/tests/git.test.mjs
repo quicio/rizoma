@@ -10,13 +10,13 @@ test("status lista archivos untracked dentro de directorios, no el directorio", 
   const root = mkdtempSync(join(tmpdir(), "taller-git-"));
   try {
     execFileSync("git", ["init", "-q"], { cwd: root });
-    mkdirSync(join(root, "docs", "banco"), { recursive: true });
-    writeFileSync(join(root, "docs", "banco", "nota.md"), "---\ntitle: N\n---\n");
+    mkdirSync(join(root, "trabajo", "banco"), { recursive: true });
+    writeFileSync(join(root, "trabajo", "banco", "nota.md"), "---\ntitle: N\n---\n");
     const dirty = await statusPorcelain(root);
-    assert.ok(dirty.some((item) => item.path === "docs/banco/nota.md"));
-    assert.equal(dirty.some((item) => item.path === "docs/banco/"), false);
+    assert.ok(dirty.some((item) => item.path === "trabajo/banco/nota.md"));
+    assert.equal(dirty.some((item) => item.path === "trabajo/banco/"), false);
     const state = await repoState(root);
-    assert.ok(state.dirty.some((item) => item.path === "docs/banco/nota.md"));
+    assert.ok(state.dirty.some((item) => item.path === "trabajo/banco/nota.md"));
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

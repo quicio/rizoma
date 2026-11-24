@@ -10,6 +10,7 @@ import { runAudit } from "../lib/audit.mjs";
 
 const ALLOWED_PREFIXES = [
   "docs/",
+  "trabajo/",
   "src/content/exploraciones/",
   "src/content/nodos/",
   "src/content/anexos/",

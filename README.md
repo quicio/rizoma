@@ -50,14 +50,15 @@ src/
     exploraciones/   # una exploración por archivo .md
     nodos/           # vocabulario compartido
     anexos/<slug>/   # anexos y su index.md por exploración
-  data/              # presentación, composiciones, navegación, materiales de KNDL
+  data/              # presentación, composiciones, trama, cartografías, materiales
   lib/               # markdown, datos, historial y resolución de enlaces
   components/        # corpus, mapa, diagrama, respiros, rail
   pages/             # rutas: /, /nodos/, /[slug]/, /[slug]/anexos/..., /trayectoria/[id]/
   styles/style.css   # copia vendorizada de kndl000 (deuda: recortar)
-docs/                # ADR, ciclos, trama, cartografías, láminas, protocolo
+docs/                # sistema: ADR, protocolo, taxonomía, punto de entrada
+trabajo/             # proceso editorial: banco, ciclos, adjuntos, lecturas, láminas
 taller/              # backoffice local-first (npm run taller)
-scripts/             # nueva-exploracion, check-links
+scripts/             # nueva-exploracion, build-lamina, check-links
 public/              # JS de rizoma-apparatus y rail-progress
 ```
 
@@ -69,7 +70,7 @@ Abrir una exploración:
 npm run nueva -- --title "Título de la deriva" --question "¿La pregunta?"
 ```
 
-Crea `src/content/exploraciones/<slug>.md` y una nota en `docs/ciclos/`. No crea
+Crea `src/content/exploraciones/<slug>.md` y una nota en `trabajo/ciclos/`. No crea
 nodos, corpus ni anexos: eso se agrega cuando existe.
 
 Reglas editoriales: ver [`docs/PUNTO-DE-ENTRADA.md`](docs/PUNTO-DE-ENTRADA.md)
@@ -102,9 +103,10 @@ Configurá las variables del repositorio:
 
 ## Estado
 
-- Las láminas siguen retiradas de la publicación. `docs/build-lamina.py`
+- Las láminas siguen retiradas de la publicación. `scripts/build-lamina.py`
   verifica con `KNDL_ROOT` apuntando a un checkout de kndl000.
 - El taller vive en `taller/` y se inicia con `npm run taller`
-  (http://127.0.0.1:4173). Indexa `src/content/` y `docs/`; las obras de KNDL
-  se referencian por URL desde `src/data/kndl-materiales.yml`.
+  (http://127.0.0.1:4173). Edita `src/content/` y `trabajo/`; `docs/` es
+  read-only. Las obras de KNDL se referencian por URL desde
+  `src/data/kndl-materiales.yml`.
 - El CSS es una copia de kndl000. Hay que extraer solo los bloques de Rizoma.

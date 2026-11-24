@@ -321,8 +321,8 @@ async function handleAttachmentApply(req, res, url) {
 
 async function handleAttachmentFile(res, url) {
   const path = url.searchParams.get("path");
-  if (!path || !path.startsWith("docs/adjuntos/")) {
-    throw new HttpError("Solo se sirven adjuntos de docs/adjuntos/.", 403);
+  if (!path || !path.startsWith("trabajo/adjuntos/")) {
+    throw new HttpError("Solo se sirven adjuntos de trabajo/adjuntos/.", 403);
   }
   let abs;
   try {

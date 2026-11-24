@@ -6,10 +6,10 @@ exploración y las colecciones con --sync. La anotación editorial (posiciones,
 citas, corte, blanco, colofón) vive en lamina-01.annotations.yml.
 
 Uso:
-    python3 docs/build-lamina.py --sync
-    python3 docs/build-lamina.py --check
-    python3 docs/build-lamina.py --verify
-    python3 docs/build-lamina.py --write
+    python3 scripts/build-lamina.py --sync
+    python3 scripts/build-lamina.py --check
+    python3 scripts/build-lamina.py --verify
+    python3 scripts/build-lamina.py --write
 """
 
 from __future__ import annotations
@@ -30,18 +30,18 @@ KNDL_ROOT = Path(os.environ.get("KNDL_ROOT", ROOT.parent / "kndl000")).resolve()
 PLATES = {
     "01": {
         "exploracion": ROOT / "src/content/exploraciones/que-se-conserva-cuando-algo-se-repite.md",
-        "data": ROOT / "docs/lamina-01.data.yml",
-        "annotations": ROOT / "docs/lamina-01.annotations.yml",
-        "html": ROOT / "docs/lamina-01-svg.html",
-        "svg": ROOT / "docs/lamina-01.svg",
+        "data": ROOT / "trabajo/laminas/lamina-01.data.yml",
+        "annotations": ROOT / "trabajo/laminas/lamina-01.annotations.yml",
+        "html": ROOT / "trabajo/laminas/lamina-01-svg.html",
+        "svg": ROOT / "trabajo/laminas/lamina-01.svg",
         "site_svg": ROOT / "public/rizoma/lamina-01.svg",
     },
     "02": {
         "exploracion": ROOT / "src/content/exploraciones/archivo.md",
-        "data": ROOT / "docs/lamina-02.data.yml",
-        "annotations": ROOT / "docs/lamina-02.annotations.yml",
-        "html": ROOT / "docs/lamina-02-svg.html",
-        "svg": ROOT / "docs/lamina-02.svg",
+        "data": ROOT / "trabajo/laminas/lamina-02.data.yml",
+        "annotations": ROOT / "trabajo/laminas/lamina-02.annotations.yml",
+        "html": ROOT / "trabajo/laminas/lamina-02-svg.html",
+        "svg": ROOT / "trabajo/laminas/lamina-02.svg",
         "site_svg": ROOT / "public/rizoma/lamina-02.svg",
     },
 }

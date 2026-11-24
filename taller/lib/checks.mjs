@@ -6,7 +6,7 @@ const PLATE_CHECKS = process.env.KNDL_ROOT
         id: "lamina-01",
         label: "Lámina 01",
         command: "python3",
-        args: ["docs/build-lamina.py", "--verify", "--plate", "01"],
+        args: ["scripts/build-lamina.py", "--verify", "--plate", "01"],
         env: { KNDL_ROOT: process.env.KNDL_ROOT },
         timeout: 120000,
         hint: "Instalá Python 3 y PyYAML (python3 -m pip install pyyaml)."
@@ -15,7 +15,7 @@ const PLATE_CHECKS = process.env.KNDL_ROOT
         id: "lamina-02",
         label: "Lámina 02",
         command: "python3",
-        args: ["docs/build-lamina.py", "--verify", "--plate", "02"],
+        args: ["scripts/build-lamina.py", "--verify", "--plate", "02"],
         env: { KNDL_ROOT: process.env.KNDL_ROOT },
         timeout: 120000,
         hint: "Instalá Python 3 y PyYAML (python3 -m pip install pyyaml)."

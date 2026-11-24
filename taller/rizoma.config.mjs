@@ -152,12 +152,8 @@ export default {
     },
     {
       id: "documento",
-      label: "Documento",
-      globs: [
-        "docs/PUNTO-DE-ENTRADA.md",
-        "docs/protocolo-cartografia.md",
-        "docs/taxonomia-anexos.md"
-      ],
+      label: "Documento de sistema",
+      globs: ["docs/*.md"],
       readOnly: true,
       required: ["title", "date"],
       fields: [
@@ -169,14 +165,14 @@ export default {
     {
       id: "banco",
       label: "Nota de banco",
-      globs: ["docs/banco/*.md"],
+      globs: ["trabajo/banco/*.md"],
       required: ["title", "date", "estado"],
       fields: NOTE_FIELDS
     },
     {
       id: "ciclo",
       label: "Ciclo",
-      globs: ["docs/ciclos/*.md"],
+      globs: ["trabajo/ciclos/*.md"],
       required: ["title", "date", "exploracion"],
       fields: [
         ...NOTE_FIELDS,
@@ -186,7 +182,7 @@ export default {
     {
       id: "nota",
       label: "Nota",
-      globs: ["docs/*.md"],
+      globs: ["trabajo/**/*.md"],
       required: ["title", "date"],
       fields: NOTE_FIELDS
     }

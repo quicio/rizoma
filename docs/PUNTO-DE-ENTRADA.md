@@ -1,6 +1,7 @@
 ---
 title: "Punto de entrada — Rizoma"
 date: 2026-11-10
+updated: 2026-11-24
 estado: vigente
 ---
 
@@ -27,7 +28,7 @@ terminar hablando de otra cosa.
   dos cuerpos con sentido distinto. Hay cinco nodos compartidos entre 01 y 02.
 - **Aparato**: anexos agrupados por tipo —corrección, fuente, concepto,
   objeción, derivación—. Hoy hay tres correcciones y una objeción.
-- **Láminas**: retiradas de la publicación; los artefactos internos quedan en `docs/`.
+- **Láminas**: retiradas de la publicación; los artefactos internos quedan en `trabajo/laminas/`.
 
 ## Cómo se trabaja
 
@@ -44,7 +45,7 @@ Roles:
 Ciclo:
 
 1. Intuición o pregunta.
-2. Nota en el banco de trabajo (`docs/`), no en el sitio.
+2. Nota en el banco de trabajo (`trabajo/banco/`), no en el sitio.
 3. Si sobrevive, rastro o exploración.
 4. Si conecta, nodo.
 5. Si hay una obra que la sostiene, corpus.
@@ -65,9 +66,9 @@ Reglas:
   ADR 0005.
 - **Las referencias de sección usan `§N` y un ancla por título**, no por número.
   Ver ADR 0002.
-- **Lo público es el mapa; el taller es el proceso.** Las notas, los ADR y los
-  descartes viven en `docs/`; el sitio muestra exploraciones, nodos,
-  corpus, anexos, láminas e historial.
+- **Lo público es el mapa; el taller es el proceso.** El contenido público vive
+  en `src/content/`; el proceso editorial, en `trabajo/`; el sistema y las
+  decisiones, en `docs/`; los datos del build, en `src/data/`. Ver ADR 0009.
 
 ## Decisiones
 
@@ -81,6 +82,7 @@ Reglas:
 | [0006](adr/ADR-0006-taller-de-rizoma.md) | Taller de Rizoma local-first: banco, adjuntos, vínculos y promoción con diff + commit. |
 | [0007](adr/ADR-0007-trama-composicion-cartografia.md) | Trama, composición y cartografía: piloto B3.1.1, no normativo fuera del piloto. |
 | [0008](adr/ADR-0008-extraccion-de-rizoma.md) | Extracción a repo Astro independiente, embebido en kndl por artefacto estático. |
+| [0009](adr/ADR-0009-separacion-de-contenido-proceso-sistema.md) | Contenido público, proceso editorial, sistema y datos en capas separadas. |
 
 ## Nueva exploración
 
@@ -94,7 +96,7 @@ El scaffold crea:
 
 - `src/content/exploraciones/<slug>.md` con el frontmatter mínimo, un
   hito inicial y dos secciones con anclas.
-- `docs/ciclos/<fecha>-<slug>.md` con la pregunta, el material por
+- `trabajo/ciclos/<fecha>-<slug>.md` con la pregunta, el material por
   completar y las decisiones.
 
 No crea nodos, corpus, anexos ni relaciones: eso se agrega cuando existe. Después:
@@ -111,7 +113,7 @@ No crea nodos, corpus, anexos ni relaciones: eso se agrega cuando existe. Despu�
 
 **Estado 2026-11-15:** las láminas se retiraron de la publicación hasta que la
 sección madure. Los artefactos (`lamina-*.data.yml`, `annotations`, SVG, PNG) se
-conservan en `docs/` como material interno. `--write` ya no escribe
+conservan en `trabajo/laminas/` como material interno. `--write` ya no escribe
 páginas ni SVG del sitio (`PUBLICAR_LAMINAS = False`). El generador y
 `--verify` quedan como herramienta para cuando se retome.
 
@@ -139,30 +141,52 @@ sitio, pero deja visible el desfase.
 npm run build                     # construir el sitio Astro
 npm run links                     # verificar enlaces internos
 npm run nueva -- --help
-python3 docs/build-lamina.py --sync    # esqueleto desde la exploración
-python3 docs/build-lamina.py --check   # fechas, corpus y nodos
-python3 docs/build-lamina.py --verify  # recalcula en memoria y compara
-python3 docs/build-lamina.py --write   # HTML, página y SVG
+python3 scripts/build-lamina.py --sync    # esqueleto desde la exploración
+python3 scripts/build-lamina.py --check   # fechas, corpus y nodos
+python3 scripts/build-lamina.py --verify  # recalcula en memoria y compara
+python3 scripts/build-lamina.py --write   # HTML, página y SVG
 # la 02 usa los mismos comandos con --plate 02
 ```
 
 ## Mapa de archivos
 
+Público:
+
 - `src/content/exploraciones/` — exploraciones públicas.
 - `src/content/nodos/` — vocabulario compartido.
-- `content/collections/_fragmentos/` — Rastros (vive en kndl000, no en este repo).
-- `docs/protocolo-cartografia.md` — roles, estados, instrumentos.
-- `docs/taxonomia-anexos.md` — tipos y estándares de anexo.
-- `docs/adr/` — decisiones durables.
-- `docs/lectura-01.md` — banco de lectura de la 01.
-- `docs/nota-diagram-design.md` — pipeline de las láminas.
-- `docs/lamina-01.data.yml` y `lamina-02.data.yml` — esqueletos generados.
-- `docs/lamina-01.annotations.yml` y `lamina-02.annotations.yml` — posiciones, citas, corte, blanco.
-- `docs/build-lamina.py` — generador; `--plate 01|02`.
-- `docs/ciclos/` — notas de cada vuelta.
+- `src/content/anexos/<exploración>/` — aparato de cada exploración.
 - `src/pages/` — rutas Astro; `src/components/` — mapa, diagrama, corpus y respiros.
 - `src/lib/` — carga de markdown, presentación, trayectoria e historial.
-- `docs/adr/ADR-0008-extraccion-de-rizoma.md` — decisión de extracción y modo embebido.
+
+Proceso editorial (no publicado):
+
+- `trabajo/banco/` — notas de trabajo.
+- `trabajo/ciclos/` — notas de cada vuelta.
+- `trabajo/adjuntos/` — adjuntos de las notas.
+- `trabajo/lecturas/lectura-01.md` — banco de lectura de la 01.
+- `trabajo/experimentos/` — notas y scripts de experimentos.
+- `trabajo/pilotos/` — evaluaciones de pilotos.
+- `trabajo/laminas/` — datos, anotaciones y artefactos de las láminas.
+
+Sistema y decisiones:
+
+- `docs/adr/` — decisiones durables, incluidas ADR 0008 (extracción) y ADR 0009 (capas).
+- `docs/protocolo-cartografia.md` — roles, estados, instrumentos.
+- `docs/taxonomia-anexos.md` — tipos y estándares de anexo.
+- `docs/nota-diagram-design.md` — pipeline de las láminas.
+
+Datos del build:
+
+- `src/data/trama/` — trama del piloto.
+- `src/data/cartografias/` — lecturas cartográficas.
+- `src/data/presentaciones/` y `src/data/composiciones/` — presentación editorial.
+- `src/data/navigation.yml`, `src/data/anexos_tipos.yml` y `src/data/kndl-materiales.yml`.
+
+Herramientas:
+
+- `scripts/nueva-exploracion.mjs` — scaffold de derivas.
+- `scripts/build-lamina.py` — generador de láminas; `--plate 01|02`.
+- `taller/` — backoffice local-first (`npm run taller`).
 
 ## Decisiones abiertas
 

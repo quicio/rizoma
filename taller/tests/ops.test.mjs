@@ -45,11 +45,11 @@ Texto.
     "src/content/exploraciones/c.md",
     "---\ntitle: C\n---\n\nArchivo y olvido.\n"
   );
-  write(root, "docs/nota.md", "---\ntitle: \"Nota\"\ndate: 2026-11-14\nestado: banco\n---\n\nCuerpo.\n");
+  write(root, "trabajo/nota.md", "---\ntitle: \"Nota\"\ndate: 2026-11-14\nestado: banco\n---\n\nCuerpo.\n");
   write(
     root,
-    "docs/otra.md",
-    "---\ntitle: \"Otra\"\ndate: 2026-11-14\nestado: banco\nvinculos:\n  - destino: docs/nota.md\n    motivo: \"depende\"\n    fecha: 2026-11-14\n---\n\nCuerpo.\n"
+    "trabajo/otra.md",
+    "---\ntitle: \"Otra\"\ndate: 2026-11-14\nestado: banco\nvinculos:\n  - destino: trabajo/nota.md\n    motivo: \"depende\"\n    fecha: 2026-11-14\n---\n\nCuerpo.\n"
   );
   return root;
 }
@@ -79,14 +79,14 @@ test("nueva nota crea solo el archivo de banco", async () => {
     });
     assert.equal(plan.validations.some((item) => !item.ok), false);
     assert.deepEqual(plan.paths ?? plan.changes.map((change) => change.path), [
-      "docs/banco/2026-11-14-mi-nota.md"
+      "trabajo/banco/2026-11-14-mi-nota.md"
     ]);
     const result = await applyPlan(root, plan);
-    assert.deepEqual(result.paths, ["docs/banco/2026-11-14-mi-nota.md"]);
-    assert.equal(existsSync(join(root, "docs/banco/2026-11-14-mi-nota.md")), true);
+    assert.deepEqual(result.paths, ["trabajo/banco/2026-11-14-mi-nota.md"]);
+    assert.equal(existsSync(join(root, "trabajo/banco/2026-11-14-mi-nota.md")), true);
     assert.equal(existsSync(join(root, "src/content/exploraciones/mi-nota.md")), false);
     const parsed = parseFrontmatter(
-      readFileSync(join(root, "docs/banco/2026-11-14-mi-nota.md"), "utf8")
+      readFileSync(join(root, "trabajo/banco/2026-11-14-mi-nota.md"), "utf8")
     );
     assert.equal(parsed.meta.estado, "banco");
     assert.equal(parsed.meta.pregunta, "¿Pregunta?");
@@ -99,7 +99,7 @@ test("guardar nota rechaza hash obsoleto y guarda si coincide", async () => {
   const root = fixture();
   try {
     const ctx = await context(root);
-    const entry = ctx.index.entries.find((item) => item.path === "docs/nota.md");
+    const entry = ctx.index.entries.find((item) => item.path === "trabajo/nota.md");
     const save = operation(ctx.registry, "guardar-nota");
     const stale = await save.plan(ctx, {
       path: entry.path,
@@ -116,8 +116,8 @@ test("guardar nota rechaza hash obsoleto y guarda si coincide", async () => {
     });
     assert.equal(fresh.validations.some((item) => !item.ok), false);
     const result = await applyPlan(root, fresh);
-    assert.deepEqual(result.paths, ["docs/nota.md"]);
-    const parsed = parseFrontmatter(readFileSync(join(root, "docs/nota.md"), "utf8"));
+    assert.deepEqual(result.paths, ["trabajo/nota.md"]);
+    const parsed = parseFrontmatter(readFileSync(join(root, "trabajo/nota.md"), "utf8"));
     assert.equal(parsed.meta.estado, "publicada");
     assert.equal(parsed.meta.campoNuevo, "se conserva");
     assert.equal(parsed.body, "Otro cuerpo.\n");
@@ -205,20 +205,20 @@ test("borrar nota pide confirmación, muestra backlinks y no edita el origen", a
   try {
     const ctx = await context(root);
     const remove = operation(ctx.registry, "borrar-nota");
-    const missingConfirm = await remove.plan(ctx, { path: "docs/nota.md", confirm: false });
+    const missingConfirm = await remove.plan(ctx, { path: "trabajo/nota.md", confirm: false });
     assert.ok(missingConfirm.validations.some((item) => item.id === "confirm" && !item.ok));
     assert.equal(missingConfirm.changes.length, 0);
 
-    const plan = await remove.plan(ctx, { path: "docs/nota.md", confirm: true });
+    const plan = await remove.plan(ctx, { path: "trabajo/nota.md", confirm: true });
     assert.equal(plan.validations.some((item) => !item.ok), false);
-    assert.ok(plan.warnings.some((warning) => warning.includes("docs/otra.md")));
-    assert.deepEqual(plan.meta.backlinks, ["docs/otra.md"]);
+    assert.ok(plan.warnings.some((warning) => warning.includes("trabajo/otra.md")));
+    assert.deepEqual(plan.meta.backlinks, ["trabajo/otra.md"]);
     assert.equal(plan.meta.tracked, false);
     await applyPlan(root, plan);
-    assert.equal(existsSync(join(root, "docs/nota.md")), false);
-    assert.equal(existsSync(join(root, "docs/otra.md")), true);
-    const source = parseFrontmatter(readFileSync(join(root, "docs/otra.md"), "utf8"));
-    assert.equal(source.meta.vinculos[0].destino, "docs/nota.md");
+    assert.equal(existsSync(join(root, "trabajo/nota.md")), false);
+    assert.equal(existsSync(join(root, "trabajo/otra.md")), true);
+    const source = parseFrontmatter(readFileSync(join(root, "trabajo/otra.md"), "utf8"));
+    assert.equal(source.meta.vinculos[0].destino, "trabajo/nota.md");
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

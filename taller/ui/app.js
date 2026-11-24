@@ -6,6 +6,7 @@ const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const LINKABLE_TYPES = new Set(["banco", "ciclo", "nota"]);
 const PLAN_PREFIXES = [
   "docs/",
+  "trabajo/",
   "src/content/exploraciones/",
   "src/content/nodos/",
   "src/content/anexos/",
