@@ -1,0 +1,18 @@
+---
+import { kndlHref } from '../lib/site';
+
+interface Props {
+  respiro: { texto: string; fuente: string; fuente_titulo: string };
+}
+
+const { respiro } = Astro.props;
+---
+
+<figure class="expediente__respiro">
+  <blockquote class="expediente__respiro-texto" set:html={respiro.texto.replace(/\n/g, '<br />')} />
+  {respiro.fuente && (
+    <figcaption class="expediente__respiro-fuente">
+      <a href={kndlHref(respiro.fuente)}>{respiro.fuente_titulo || respiro.fuente}</a>
+    </figcaption>
+  )}
+</figure>

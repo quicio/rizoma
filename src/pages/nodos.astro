@@ -1,0 +1,50 @@
+---
+import Base from '../layouts/Base.astro';
+import SectionRail from '../components/SectionRail.astro';
+import BackButton from '../components/BackButton.astro';
+import { listExploraciones, listNodos } from '../lib/content';
+import { kndlHome, withBase } from '../lib/site';
+
+const nodos = listNodos();
+const exploraciones = listExploraciones();
+---
+
+<Base title="Nodos" description="Nodos de Rizoma — KNDL 000. Puntos de conexión provisionales entre exploraciones.">
+  <h1 class="page-title" aria-label="Nodos">
+    <span class="page-title__text">
+      <span class="sigil sigil--rizoma" aria-hidden="true"><span class="sigil__glyph">⋔</span></span>
+      Nodos
+    </span>
+    <span class="init"><a href={kndlHome()} aria-label="Inicio">∅ INIT</a></span>
+  </h1>
+
+  <p class="rizoma-lede">Puntos de conexión, no categorías. Cada nodo reúne exploraciones donde una idea aparece y cambia de sentido. Las definiciones son provisorias.</p>
+
+  <div class="nodos">
+    {
+      nodos.map((nodo) => {
+        const vinculadas = exploraciones.filter((exploracion) =>
+          (exploracion.data.nodos || []).includes(nodo.data.title)
+        );
+        return (
+          <section class="nodo" id={nodo.slug}>
+            <h2 class="nodo__title">{nodo.data.title}</h2>
+            <p class="nodo__definition">{nodo.data.definition}</p>
+            {vinculadas.length > 0 ? (
+              <ul class="nodo__list">
+                {vinculadas.map((exploracion) => (
+                  <li><a href={withBase(`/${exploracion.slug}/`)}>{exploracion.data.title}</a></li>
+                ))}
+              </ul>
+            ) : (
+              <p class="nodo__empty">Todavía sin exploraciones.</p>
+            )}
+          </section>
+        );
+      })
+    }
+  </div>
+
+  <BackButton />
+  <SectionRail />
+</Base>

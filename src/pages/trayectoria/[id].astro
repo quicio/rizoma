@@ -1,0 +1,166 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import BackButton from '../../components/BackButton.astro';
+import SectionRail from '../../components/SectionRail.astro';
+import { loadCartografias, buildCartografia } from '../../lib/data';
+import { kndlHref, withBase } from '../../lib/site';
+
+export function getStaticPaths() {
+  return loadCartografias().map((cartography) => ({
+    params: { id: cartography.id },
+    props: { id: cartography.id },
+  }));
+}
+
+const { id } = Astro.props;
+const raw = loadCartografias().find((item) => item.id === id);
+if (!raw) throw new Error(`Cartografía inexistente: ${id}`);
+const cartografia = buildCartografia(raw);
+---
+
+<Base
+  title={`Trayectoria · ${cartografia.fecha}`}
+  seoTitle={`Trayectoria · ${id} · KNDL 000`}
+  description="Trayectoria revisada del piloto B3.1.1: aceptadas, rechazadas y pendientes."
+  noindex
+  bodyClass="reading-poemas reading-rizoma reading-cartografia"
+>
+  <Breadcrumb />
+
+  <header class="cartografia-head">
+    <p class="cartografia-eyebrow">Trayectoria · vista de trabajo</p>
+    <h1 class="cartografia-title">Trayectoria de la investigación</h1>
+    <p class="cartografia-intro">Una lectura posterior y revisable de la trama. No es una verdad ni una vista completa: conserva lo aceptado, lo rechazado y lo pendiente.</p>
+    <p class="cartografia-meta">
+      {cartografia.fecha && <span>{cartografia.fecha}</span>}
+      {cartografia.decision && <span>decisión {cartografia.decision}</span>}
+      {cartografia.autor && <span>autor {cartografia.autor}</span>}
+      {cartografia.propuesta_por && <span>propuesta {cartografia.propuesta_por}</span>}
+    </p>
+  </header>
+
+  <section class="cartografia-section" aria-labelledby="cartografia-guide">
+    <h2 class="cartografia-section__title" id="cartografia-guide">Cómo leer</h2>
+    <p class="cartografia-line"><span class="cartografia-label">Frente:</span> una línea de indagación que puede cambiar de formulación sin perder identidad.</p>
+    <p class="cartografia-line"><span class="cartografia-label">Procedencia:</span> de dónde viene la pregunta.</p>
+    <p class="cartografia-line"><span class="cartografia-label">Lente:</span> qué cambia la mirada sobre la pregunta.</p>
+    <p class="cartografia-line"><span class="cartografia-label">Contraste:</span> qué sostiene, cuestiona o tensiona una afirmación.</p>
+    <p class="cartografia-line"><span class="cartografia-label">Evidencia:</span> de dónde se sostiene la relación; puede ser explícita o inferida.</p>
+    <p class="cartografia-line"><span class="cartografia-label">Formulación:</span> cada cambio de la pregunta a lo largo del tiempo.</p>
+  </section>
+
+  <section class="cartografia-section" aria-labelledby="cartografia-alcance">
+    <h2 class="cartografia-section__title" id="cartografia-alcance">Alcance</h2>
+    {cartografia.frente && (
+      <p class="cartografia-line">
+        <span class="cartografia-label">Frente:</span> {cartografia.frente.nombre}
+        {cartografia.frente.estado ? ` · ${cartografia.frente.estado_label ?? cartografia.frente.estado}` : ''}
+      </p>
+    )}
+    {cartografia.composiciones.length > 0 && (
+      <p class="cartografia-line">
+        <span class="cartografia-label">Composiciones:</span>
+        {cartografia.composiciones.map((composicion, index) => (
+          <>{index > 0 ? ' · ' : ''}<a href={withBase(`/${composicion.slug}/`)}>{composicion.slug}</a></>
+        ))}
+      </p>
+    )}
+    {cartografia.evidencia.length > 0 && (
+      <p class="cartografia-line"><span class="cartografia-label">Evidencia:</span> {cartografia.evidencia.join(' · ')}</p>
+    )}
+  </section>
+
+  {cartografia.frente?.formulaciones?.length > 0 && (
+    <section class="cartografia-section" aria-labelledby="cartografia-formulaciones">
+      <h2 class="cartografia-section__title" id="cartografia-formulaciones">Formulaciones del frente</h2>
+      <ol class="cartografia-formulaciones">
+        {cartografia.frente.formulaciones.map((formulacion) => (
+          <li>
+            <p class="cartografia-line"><time datetime={formulacion.fecha}>{formulacion.fecha}</time> · {formulacion.tipo}</p>
+            <p class="trayectoria__motivo">{formulacion.texto}</p>
+            {formulacion.fuente && <p class="cartografia-line"><span class="cartografia-label">Fuente:</span> {formulacion.fuente}</p>}
+          </li>
+        ))}
+      </ol>
+      {cartografia.frente.tensiones.length > 0 && (
+        <div class="trayectoria__tensiones">
+          {cartografia.frente.tensiones.map((tension) => <p>{tension}</p>)}
+        </div>
+      )}
+    </section>
+  )}
+
+  <section class="cartografia-section" aria-labelledby="cartografia-aceptadas">
+    <h2 class="cartografia-section__title" id="cartografia-aceptadas">Inscripciones aceptadas ({cartografia.aceptadas.length})</h2>
+    <ul class="trayectoria__inscripciones">
+      {cartografia.aceptadas.map((inscripcion) => (
+        <li class="trayectoria__inscripcion" id={`cartografia-${inscripcion.id}`}>
+          <p class="trayectoria__material">
+            <span class="trayectoria__kind">{inscripcion.material.kind}</span>
+            <a href={kndlHref(inscripcion.material.url)}>{inscripcion.material.title}</a>
+          </p>
+          <p class="trayectoria__etiqueta">{inscripcion.frente?.nombre} · ID: {inscripcion.id}</p>
+          <p class="trayectoria__funcion">
+            {inscripcion.interpretacion?.principal}
+            {inscripcion.interpretacion?.compatibles?.length ? ` · ${inscripcion.interpretacion.compatibles.join(' · ')}` : ''}
+          </p>
+          {inscripcion.interpretacion?.motivo && <p class="trayectoria__motivo">{inscripcion.interpretacion.motivo}</p>}
+          {inscripcion.interpretacion?.efecto && <p class="trayectoria__efecto">{inscripcion.interpretacion.efecto}</p>}
+          {inscripcion.evidencia.length > 0 && (
+            <details class="trayectoria__details">
+              <summary>Evidencia ({inscripcion.evidencia.length})</summary>
+              <ul class="trayectoria__evidencia">
+                {inscripcion.evidencia.map((evidencia) => (
+                  <li>
+                    <span class="trayectoria__modo">{evidencia.modo}</span>
+                    {evidencia.nivel ? ` · ${evidencia.nivel}` : ''}
+                    {evidencia.fuente ? ` · ${evidencia.fuente}` : ''}
+                    {evidencia.cita && <span class="trayectoria__cita">«{evidencia.cita}»</span>}
+                    {evidencia.nota && <span class="trayectoria__nota">{evidencia.nota}</span>}
+                  </li>
+                ))}
+              </ul>
+            </details>
+          )}
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  {cartografia.rechazadas.length > 0 && (
+    <section class="cartografia-section" aria-labelledby="cartografia-rechazadas">
+      <h2 class="cartografia-section__title" id="cartografia-rechazadas">Propuestas rechazadas ({cartografia.rechazadas.length})</h2>
+      <ul class="cartografia-list">
+        {cartografia.rechazadas.map((rechazo) => (
+          <li>
+            <p class="cartografia-line"><span class="cartografia-label">{rechazo.id}</span></p>
+            {rechazo.motivo && <p class="trayectoria__motivo">{rechazo.motivo}</p>}
+            {rechazo.reconsiderar && <p class="trayectoria__nota">Reconsiderar: sí</p>}
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  {cartografia.pendientes.length > 0 && (
+    <section class="cartografia-section" aria-labelledby="cartografia-pendientes">
+      <h2 class="cartografia-section__title" id="cartografia-pendientes">Pendientes ({cartografia.pendientes.length})</h2>
+      <ul class="cartografia-list">
+        {cartografia.pendientes.map((pendiente) => (
+          <li><p class="trayectoria__motivo">{pendiente}</p></li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  {cartografia.notas && (
+    <section class="cartografia-section" aria-labelledby="cartografia-notas">
+      <h2 class="cartografia-section__title" id="cartografia-notas">Notas</h2>
+      <p class="cartografia-intro">{cartografia.notas}</p>
+    </section>
+  )}
+
+  <BackButton />
+  <SectionRail />
+</Base>

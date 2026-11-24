@@ -1,0 +1,39 @@
+---
+import { materialFor } from '../lib/data';
+import { kndlHref } from '../lib/site';
+import type { CorpusItem } from '../lib/content';
+
+interface Props {
+  items?: CorpusItem[];
+  only?: string[];
+  compact?: boolean;
+}
+
+const { items = [], only, compact = false } = Astro.props;
+const shown = only ? items.filter((item) => only.includes(item.url)) : items;
+---
+
+<ul class:list={['expediente-corpus', { 'expediente-corpus--inline': compact }]}>
+  {
+    shown.map((item) => {
+      const material = materialFor(item.url);
+      const title = item.label || material.title;
+      const kind = item.kind || material.kind;
+      const sigil = item.sigil || material.sigil;
+      return (
+        <li class="expediente-corpus__item">
+          <a href={kndlHref(item.url)}>
+            {material.glyph && (
+              <span class:list={['sigil', sigil && `sigil--${sigil}`]} aria-hidden="true">
+                <span class="sigil__glyph">{material.glyph}</span>
+              </span>
+            )}
+            {!compact && <span class="expediente-corpus__kind">{kind}</span>}
+            <span class="expediente-corpus__title">{title}</span>
+          </a>
+          {!compact && item.note && <p class="expediente-corpus__note">{item.note}</p>}
+        </li>
+      );
+    })
+  }
+</ul>

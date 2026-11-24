@@ -1,0 +1,93 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Breadcrumb from '../../../components/Breadcrumb.astro';
+import BackButton from '../../../components/BackButton.astro';
+import SectionRail from '../../../components/SectionRail.astro';
+import { listExploraciones, listAnexos, getExploracion } from '../../../lib/content';
+import { loadAnexoTipos } from '../../../lib/data';
+import { withBase } from '../../../lib/site';
+
+export function getStaticPaths() {
+  return listExploraciones().flatMap((doc) =>
+    listAnexos(doc.slug).anexos.map((anexo) => ({
+      params: { slug: doc.slug, anexo: anexo.slug },
+      props: { slug: doc.slug, anexo: anexo.slug },
+    }))
+  );
+}
+
+const { slug, anexo: anexoSlug } = Astro.props;
+const exploracion = getExploracion(slug);
+if (!exploracion) throw new Error(`Exploración inexistente: ${slug}`);
+const bundle = listAnexos(slug);
+const anexo = bundle.anexos.find((item) => item.slug === anexoSlug);
+if (!anexo) throw new Error(`Anexo inexistente: ${slug}/${anexoSlug}`);
+
+const tipos = loadAnexoTipos();
+const tipo = tipos.find((item) => item.id === anexo.data.tipo);
+---
+
+<Base title={anexo.data.title} description={anexo.data.procedencia}>
+  <Breadcrumb exploracionUrl={withBase(`/${slug}/`)} />
+
+  <header class="expediente__head">
+    <h1 class="expediente__title">{anexo.data.title}</h1>
+    <p class="expediente__meta">
+      <span>Anexo {anexo.data.order ?? '—'} · {tipo?.label ?? 'Anexo'} · {anexo.data.estado ?? 'abierto'}</span>
+      {anexo.data.date && <span>{anexo.data.date}</span>}
+      <span>{exploracion.data.title}</span>
+    </p>
+    {anexo.data.procedencia && <p class="expediente__procedencia">{anexo.data.procedencia}</p>}
+  </header>
+
+  <div class="expediente expediente--with-margin">
+    <div class="expediente__body reading-body">
+      <Fragment set:html={anexo.html} />
+
+      {anexo.data.fuentes?.length ? (
+        <section class="anexo-fuentes" id="fuentes">
+          <h2>Fuentes</h2>
+          <p class="anexo-fuentes__intro">Cada fuente declara qué se verificó. Las que no se consultaron completas se marcan como tales.</p>
+          <ol class="anexo-fuentes__list">
+            {anexo.data.fuentes.map((fuente) => (
+              <li>
+                <p class="anexo-fuente__ref">
+                  {fuente.autor}. <em>{fuente.titulo}</em>{fuente.anio ? ` (${fuente.anio})` : ''}.
+                  {fuente.publicacion ? ` ${fuente.publicacion}.` : ''}
+                </p>
+                {fuente.url && <p class="anexo-fuente__url"><a href={fuente.url}>{fuente.url}</a></p>}
+                <p class="anexo-fuente__meta">consultado {fuente.consultado}{fuente.tipo ? ` · ${fuente.tipo}` : ''}</p>
+                {fuente.verifica && <p class="anexo-fuente__verifica">{fuente.verifica}</p>}
+              </li>
+            ))}
+          </ol>
+        </section>
+      ) : null}
+    </div>
+
+    <aside class="expediente__margin" aria-label="Ficha del anexo">
+      <section class="expediente__block">
+        <h2 class="expediente__margin-title">Exploración</h2>
+        <p class="anexo__margin-note"><a href={withBase(`/${slug}/`)}>{exploracion.data.title}</a></p>
+      </section>
+
+      <section class="expediente__block">
+        <h2 class="expediente__margin-title">Tipo</h2>
+        <p class="anexo__margin-note">{tipo?.label ?? 'Anexo'}</p>
+      </section>
+
+      <section class="expediente__block">
+        <h2 class="expediente__margin-title">Estado</h2>
+        <p class="anexo__margin-note">{anexo.data.estado ?? 'abierto'}</p>
+      </section>
+
+      <section class="expediente__block">
+        <h2 class="expediente__margin-title">Fuentes</h2>
+        <a class="expediente__history-link" href="#fuentes">Ver las fuentes →</a>
+      </section>
+    </aside>
+  </div>
+
+  <BackButton />
+  <SectionRail />
+</Base>

@@ -1,0 +1,29 @@
+---
+import type { Presentacion } from '../lib/data';
+
+interface Props {
+  presentacion?: Presentacion;
+}
+
+const { presentacion } = Astro.props;
+const mapa = presentacion?.mapa ?? [];
+---
+
+{
+  mapa.length > 0 && (
+    <nav class="expediente__mapa" aria-label="Mapa de lectura">
+      <p class="expediente__mapa-eyebrow">Mapa de lectura</p>
+      <ol class="expediente__mapa-lista">
+        {mapa.map((paso, index) => (
+          <li class="expediente__mapa-paso">
+            <a href={`#${paso.id}`}>
+              <span class="expediente__mapa-num">{index + 1}</span>
+              <span class="expediente__mapa-label">{paso.etiqueta}</span>
+              {paso.movimiento && <span class="expediente__mapa-movimiento">{paso.movimiento}</span>}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )
+}

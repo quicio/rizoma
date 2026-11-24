@@ -1,0 +1,107 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import BackButton from '../../components/BackButton.astro';
+import SectionRail from '../../components/SectionRail.astro';
+import { listExploraciones, getExploracion } from '../../lib/content';
+import { buildHistory, currentVersion, historyFileFor } from '../../lib/history';
+import { withBase } from '../../lib/site';
+
+export function getStaticPaths() {
+  return listExploraciones().map((doc) => ({ params: { slug: doc.slug }, props: { slug: doc.slug } }));
+}
+
+const { slug } = Astro.props;
+const doc = getExploracion(slug);
+if (!doc) throw new Error(`Exploración inexistente: ${slug}`);
+
+const file = historyFileFor(slug);
+const history = file ? buildHistory(file) : [];
+const current = currentVersion(doc);
+const hitos = doc.data.hitos || [];
+---
+
+<Base title="Historial de evolución" description={`Versiones de ${doc.data.title}`}>
+  <Breadcrumb exploracionUrl={withBase(`/${slug}/`)} />
+
+  <header class="historia-head">
+    <h1 class="historia-head__title">Historial de evolución</h1>
+    <p class="historia-head__exploracion">
+      <a href={withBase(`/${slug}/`)}>{doc.data.title}</a>
+    </p>
+    {doc.data.question && <p class="historia-head__question">{doc.data.question}</p>}
+    <p class="historia-intro">Las versiones provienen de Git. Para recuperar una versión, abrí el archivo en el commit correspondiente; esta vista no sobrescribe el historial.</p>
+  </header>
+
+  <section class="historia-section" aria-labelledby="historia-actual-title">
+    <h2 class="historia-section__title" id="historia-actual-title">Versión actual</h2>
+    <div class="historia-current">
+      <p class="historia-current__title">{current.title}</p>
+      {current.question && <p class="historia-current__question">{current.question}</p>}
+      {current.summary && <p class="historia-current__summary">{current.summary}</p>}
+      <p class="historia-version__meta">
+        {current.status}
+        {current.nodos.length > 0 ? ` · ${current.nodos.length} nodos` : ''}
+        {current.updated ? ` · actualizado ${current.updated}` : ''}
+      </p>
+      <p class="historia-current__back"><a href={withBase(`/${slug}/`)}>Volver a la exploración →</a></p>
+    </div>
+  </section>
+
+  {hitos.length > 0 && (
+    <section class="historia-section" aria-labelledby="historia-hitos-title">
+      <h2 class="historia-section__title" id="historia-hitos-title">Hitos editoriales</h2>
+      <p class="historia-note">Hitos curados: no son eventos automáticos. Registran decisiones que Git no puede leer; las versiones registran los cambios de frontmatter.</p>
+      <ol class="historia-hitos">
+        {hitos.map((hito) => (
+          <li class="historia-hito">
+            <time datetime={hito.date}>{hito.date}</time>
+            <div class="historia-hito__body">
+              <h3>{hito.title}</h3>
+              <p>{hito.text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+  )}
+
+  <section class="historia-section" aria-labelledby="historia-versiones-title">
+    <h2 class="historia-section__title" id="historia-versiones-title">Versiones registradas</h2>
+    {history.length === 0 ? (
+      <p class="historia-empty">No hay historial de Git disponible en este entorno. La versión actual sigue siendo la de la exploración.</p>
+    ) : (
+      <ol class="historia-versiones">
+        {history.map((version) => (
+          <li class="historia-version">
+            <time datetime={version.date}>{version.date}</time>
+            <div class="historia-version__body">
+              <h3>{version.title || 'Sin título'}</h3>
+              {version.question && <p class="historia-version__question">{version.question}</p>}
+              {version.summary && <p class="historia-version__summary">{version.summary}</p>}
+              <p class="historia-version__meta">
+                {version.status}
+                {version.nodos.length > 0 ? ` · ${version.nodos.length} nodos` : ''}
+              </p>
+              {version.changes.length > 0 && (
+                <ul class="historia-version__changes">
+                  {version.changes.map((change) => <li>{change}</li>)}
+                </ul>
+              )}
+              <p class="historia-version__message">{version.message}</p>
+              <p class="historia-version__links">
+                <a href={version.url_commit} target="_blank" rel="noopener noreferrer">Commit {version.short} ↗</a>
+                <a href={version.url_file} target="_blank" rel="noopener noreferrer">Ver archivo ↗</a>
+                <a href={version.url_raw} target="_blank" rel="noopener noreferrer">Texto plano ↗</a>
+                {version.url_compare && <a href={version.url_compare} target="_blank" rel="noopener noreferrer">Comparar con la anterior ↗</a>}
+              </p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    )}
+  </section>
+
+  <BackButton />
+  <SectionRail />
+</Base>

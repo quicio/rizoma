@@ -1,0 +1,26 @@
+{
+  "name": "rizoma",
+  "version": "0.1.0",
+  "description": "Rizoma — exploraciones abiertas de KNDL. Sitio Astro independiente, embebible en kndl000.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "nueva": "node scripts/nueva-exploracion.mjs",
+    "links": "node scripts/check-links.mjs"
+  },
+  "dependencies": {
+    "astro": "^7.4.13",
+    "gray-matter": "^4.0.3",
+    "js-yaml": "^4.1.0",
+    "markdown-it": "^14.1.0",
+    "markdown-it-attrs": "^4.3.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "typescript": "^5.9.3"
+  }
+}

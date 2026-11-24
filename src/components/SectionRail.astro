@@ -1,0 +1,44 @@
+---
+import { loadNavigation } from '../lib/data';
+import { kndlHref, withBase } from '../lib/site';
+
+const items = loadNavigation();
+const here = Astro.url.pathname;
+const currentBase = withBase('/');
+
+function hrefFor(url: string): string {
+  return url === '/rizoma/' ? withBase('/') : kndlHref(url);
+}
+
+function isActive(url: string): boolean {
+  if (url === '/rizoma/') return here === currentBase || here.startsWith(currentBase);
+  return false;
+}
+---
+
+<nav class="archive-rail" aria-label="Secciones del archivo">
+  <span class="archive-rail__progress" aria-hidden="true">
+    <span class="archive-rail__progress-fill"></span>
+  </span>
+  <ul class="archive-rail__list">
+    {
+      items.map((item) => (
+        <li>
+          <a
+            class:list={['archive-rail__link', { 'is-active': isActive(item.url) }]}
+            href={hrefFor(item.url)}
+            data-label={item.name}
+            aria-label={item.name}
+            aria-current={isActive(item.url) ? 'page' : undefined}
+          >
+            <span class:list={['sigil', `sigil--${item.sigil}`]} aria-hidden="true">
+              <span class="sigil__glyph">{item.glyph}</span>
+            </span>
+            <span class="archive-rail__name">{item.name}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+<script src={withBase('/rail-progress.js')} defer></script>

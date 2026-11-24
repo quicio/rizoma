@@ -1,0 +1,15 @@
+---
+import { kndlHome, withBase } from '../lib/site';
+
+interface Props {
+  exploracionUrl?: string;
+}
+
+const { exploracionUrl } = Astro.props;
+---
+
+<nav class="reading-breadcrumb" aria-label="Ruta">
+  <a href={withBase('/')}>← Rizoma</a>
+  {exploracionUrl && <a href={exploracionUrl}>← Exploración</a>}
+  <a href={kndlHome()} aria-label="Inicio">∅ INIT</a>
+</nav>

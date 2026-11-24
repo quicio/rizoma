@@ -1,0 +1,55 @@
+---
+import { kndlHref } from '../lib/site';
+import type { Presentacion } from '../lib/data';
+
+interface Props {
+  diagrama: NonNullable<Presentacion['diagrama']>;
+}
+
+const { diagrama } = Astro.props;
+---
+
+<figure class="expediente__diagrama">
+  <figcaption class="expediente__diagrama-head">
+    <p class="expediente__diagrama-eyebrow">Diagrama de tensión</p>
+    <h2 class="expediente__diagrama-title">{diagrama.titulo}</h2>
+  </figcaption>
+
+  <div class="expediente__diagrama-grid">
+    <section class="expediente__diagrama-lado">
+      <p class="expediente__diagrama-etiqueta">{diagrama.izquierda.etiqueta}</p>
+      {diagrama.izquierda.nota && <p class="expediente__diagrama-nota">{diagrama.izquierda.nota}</p>}
+      <ul class="expediente__diagrama-obras">
+        {
+          diagrama.izquierda.obras.map((obra) => (
+            <li>
+              <span class="expediente__diagrama-kind">{obra.kind}</span>
+              <a href={kndlHref(obra.url)}>{obra.title}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <div class="expediente__diagrama-corte" aria-hidden="true">
+      {diagrama.corte && <span>{diagrama.corte}</span>}
+    </div>
+
+    <section class="expediente__diagrama-lado">
+      <p class="expediente__diagrama-etiqueta">{diagrama.derecha.etiqueta}</p>
+      {diagrama.derecha.nota && <p class="expediente__diagrama-nota">{diagrama.derecha.nota}</p>}
+      <ul class="expediente__diagrama-obras">
+        {
+          diagrama.derecha.obras.map((obra) => (
+            <li>
+              <span class="expediente__diagrama-kind">{obra.kind}</span>
+              <a href={kndlHref(obra.url)}>{obra.title}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
+
+  {diagrama.blanco && <p class="expediente__diagrama-blanco">{diagrama.blanco}</p>}
+</figure>

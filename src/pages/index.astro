@@ -1,0 +1,53 @@
+---
+import Base from '../layouts/Base.astro';
+import SectionRail from '../components/SectionRail.astro';
+import { listExploraciones } from '../lib/content';
+import { kndlHome, withBase } from '../lib/site';
+
+const exploraciones = listExploraciones();
+---
+
+<Base title="Rizoma" description="Rizoma — KNDL 000. Exploraciones abiertas, nodos provisionales y un mapa que se construye al recorrerlo.">
+  <h1 class="page-title" aria-label="Rizoma">
+    <span class="page-title__text">
+      <span class="sigil sigil--rizoma" aria-hidden="true"><span class="sigil__glyph">⋔</span></span>
+      Rizoma
+    </span>
+    <span class="init"><a href={kndlHome()} aria-label="Inicio">∅ INIT</a></span>
+  </h1>
+
+  <p class="rizoma-lede">Un espacio para explorar ideas, descomponer conceptos y encontrar relaciones entre territorios aparentemente distantes.</p>
+
+  <div class="rizoma-declaration">
+    <p>Cada exploración comienza con una intuición, una pregunta o un fenómeno. A partir de ahí, las ideas se desplazan, se fragmentan, se conectan y vuelven a aparecer bajo otras formas.</p>
+    <p>No hay un recorrido predeterminado ni una conclusión obligatoria. Hay lecturas, referencias, poemas, código, experimentos y fragmentos que se incorporan al proceso.</p>
+    <p>Algunas ideas persisten. Otras se transforman, se contradicen o abren nuevas exploraciones.</p>
+    <p class="rizoma-declaration__close">El mapa permanece abierto.</p>
+  </div>
+
+  <div class="rizoma-index">
+    {exploraciones.length === 0 && <p class="reading-empty">Todavía no hay exploraciones abiertas.</p>}
+    {
+      exploraciones.map((exploracion) => (
+        <article class="expediente-item">
+          <span class="expediente-item__num">{exploracion.data.order}</span>
+          <div class="expediente-item__body">
+            <h2 class="expediente-item__title"><a href={withBase(`/${exploracion.slug}/`)}>{exploracion.data.title}</a></h2>
+            {exploracion.data.question && <p class="expediente-item__question">{exploracion.data.question}</p>}
+            <p class="expediente-item__meta">
+              {exploracion.data.nodos?.length ? `${exploracion.data.nodos.length} nodos · ` : ''}
+              {exploracion.data.corpus?.length ?? 0} piezas · {exploracion.data.status}
+              {exploracion.data.updated ? ` · ${exploracion.data.updated}` : ''}
+            </p>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+
+  <p class="rizoma-nodos-link">
+    <a href={withBase('/nodos/')}>Ver los nodos →</a>
+  </p>
+
+  <SectionRail />
+</Base>
