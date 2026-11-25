@@ -24,7 +24,7 @@ fuentes:
     titulo: "Experimento de Shannon"
     anio: 2025
     publicacion: "Código, KNDL"
-    url: "https://kndl.quicio.qzz.io/codigo/experimento-shannon/"
+    url: "https://kndl.quicio.org/codigo/experimento-shannon/"
     consultado: 2026-11-10
     tipo: "código"
     verifica: >-

@@ -15,7 +15,7 @@ fuentes:
     titulo: "Medusa"
     anio: 2026
     publicacion: "Poemas, KNDL"
-    url: "https://kndl.quicio.qzz.io/poemas/medusa/"
+    url: "https://kndl.quicio.org/poemas/medusa/"
     consultado: 2026-11-10
     tipo: "primaria"
     verifica: >-
@@ -28,7 +28,7 @@ fuentes:
     titulo: "Lo que el archivo no conserva"
     anio: 2026
     publicacion: "Rizoma, KNDL"
-    url: "https://kndl.quicio.qzz.io/rizoma/archivo/"
+    url: "https://kndl.quicio.org/rizoma/archivo/"
     consultado: 2026-11-10
     tipo: "exploración"
     verifica: >-

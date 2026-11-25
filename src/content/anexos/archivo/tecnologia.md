@@ -15,7 +15,7 @@ fuentes:
     titulo: "¿Qué se conserva cuando algo se repite?"
     anio: 2026
     publicacion: "Rizoma, KNDL"
-    url: "https://kndl.quicio.qzz.io/rizoma/que-se-conserva-cuando-algo-se-repite/"
+    url: "https://kndl.quicio.org/rizoma/que-se-conserva-cuando-algo-se-repite/"
     consultado: 2026-11-10
     tipo: "exploración"
     verifica: >-
@@ -27,7 +27,7 @@ fuentes:
     titulo: "Lo que el archivo no conserva"
     anio: 2026
     publicacion: "Rizoma, KNDL"
-    url: "https://kndl.quicio.qzz.io/rizoma/archivo/"
+    url: "https://kndl.quicio.org/rizoma/archivo/"
     consultado: 2026-11-10
     tipo: "exploración"
     verifica: >-

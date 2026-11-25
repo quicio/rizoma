@@ -23,7 +23,7 @@ fuentes:
     titulo: "Voto por mayoría"
     anio: 2026
     publicacion: "Código, KNDL"
-    url: "https://kndl.quicio.qzz.io/codigo/voto-por-mayoria/"
+    url: "https://kndl.quicio.org/codigo/voto-por-mayoria/"
     consultado: 2026-11-10
     tipo: "código"
     verifica: >-

@@ -1,10 +1,10 @@
 # Rizoma
 
 Sitio independiente de **Rizoma**, la sección de exploraciones abiertas de
-[KNDL 000](https://kndl.quicio.qzz.io). Construido con [Astro](https://astro.build)
+[KNDL 000](https://kndl.quicio.org). Construido con [Astro](https://astro.build)
 y markdown. Se puede desplegar solo o embeber en kndl000 en `/rizoma/`.
 
-Sitio: **https://quicio.github.io/rizoma/**
+Sitio: **https://rizoma.quicio.org/**
 Repositorio: [`quicio/rizoma`](https://github.com/quicio/rizoma).
 
 ## Empezar
@@ -23,13 +23,14 @@ RIZOMA_BASE=/rizoma npm run build
 Build independiente con enlaces absolutos al corpus de KNDL:
 
 ```bash
-RIZOMA_BASE=/ RIZOMA_KNDL_ORIGIN=https://kndl.quicio.qzz.io npm run build
+RIZOMA_BASE=/ RIZOMA_KNDL_ORIGIN=https://kndl.quicio.org npm run build
 ```
 
 Verificación de enlaces internos:
 
 ```bash
-RIZOMA_BASE=/rizoma npm run links
+RIZOMA_BASE=/ npm run links          # dominio propio
+RIZOMA_BASE=/rizoma npm run links    # embed en kndl
 ```
 
 ## Modos de publicación
@@ -37,7 +38,8 @@ RIZOMA_BASE=/rizoma npm run links
 | Modo | `RIZOMA_BASE` | `RIZOMA_KNDL_ORIGIN` | Uso |
 |---|---|---|---|
 | Embebido en kndl | `/rizoma` | vacío | kndl copia `dist/` en `_site/rizoma/` |
-| Independiente | `/` o `/rizoma` | `https://kndl.quicio.qzz.io` | GitHub Pages propio |
+| Independiente (dominio propio) | `/` | `https://kndl.quicio.org` | `rizoma.quicio.org` |
+| Project page heredada | `/rizoma` | `https://kndl.quicio.org` | `quicio.github.io/rizoma` |
 
 En modo embebido los enlaces a poemas, código, dispositivos y vestigios quedan
 root-relative y los resuelve kndl. En modo independiente se vuelven absolutos
@@ -96,10 +98,10 @@ En CI, kndl hace checkout de este repositorio antes de correr el script.
 El workflow `.github/workflows/deploy.yml` construye y publica en GitHub Pages.
 Configurá las variables del repositorio:
 
-- `RIZOMA_SITE`: origen canónico (por defecto `https://quicio.github.io`). En el
-  build embebido, kndl pasa `https://kndl.quicio.qzz.io`.
-- `RIZOMA_BASE`: `/rizoma` para project page; `/` para dominio propio.
-- `RIZOMA_KNDL_ORIGIN`: `https://kndl.quicio.qzz.io` para enlazar el corpus.
+- `RIZOMA_SITE`: origen canónico (por defecto `https://rizoma.quicio.org`). En el
+  build embebido, kndl pasa `https://kndl.quicio.org`.
+- `RIZOMA_BASE`: `/` para `rizoma.quicio.org`; `/rizoma` solo para el embed o una project page heredada.
+- `RIZOMA_KNDL_ORIGIN`: `https://kndl.quicio.org` para enlazar el corpus.
 - `PUBLIC_GA4_ID`: opcional.
 
 ## Estado

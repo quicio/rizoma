@@ -1,7 +1,7 @@
 const rawBase = import.meta.env.BASE_URL || '/';
 export const BASE = rawBase === '/' ? '/' : `/${rawBase.replace(/^\/+|\/+$/g, '')}`;
 
-export const SITE_URL = (process.env.RIZOMA_SITE || 'https://kndl.quicio.qzz.io').replace(/\/$/, '');
+export const SITE_URL = (process.env.RIZOMA_SITE || 'https://kndl.quicio.org').replace(/\/$/, '');
 
 // Origen de KNDL para el corpus. Vacío en modo embebido: los enlaces quedan
 // root-relative y los resuelve el sitio que hospeda a Rizoma.

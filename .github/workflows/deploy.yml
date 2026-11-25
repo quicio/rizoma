@@ -31,15 +31,15 @@ jobs:
 
       - name: Build
         env:
-          RIZOMA_SITE: ${{ vars.RIZOMA_SITE || 'https://quicio.github.io' }}
-          RIZOMA_BASE: ${{ vars.RIZOMA_BASE || '/rizoma' }}
-          RIZOMA_KNDL_ORIGIN: ${{ vars.RIZOMA_KNDL_ORIGIN || 'https://kndl.quicio.qzz.io' }}
+          RIZOMA_SITE: ${{ vars.RIZOMA_SITE || 'https://rizoma.quicio.org' }}
+          RIZOMA_BASE: ${{ vars.RIZOMA_BASE || '/' }}
+          RIZOMA_KNDL_ORIGIN: ${{ vars.RIZOMA_KNDL_ORIGIN || 'https://kndl.quicio.org' }}
           PUBLIC_GA4_ID: ${{ vars.PUBLIC_GA4_ID }}
         run: npm run build
 
       - name: Check links
         env:
-          RIZOMA_BASE: ${{ vars.RIZOMA_BASE || '/rizoma' }}
+          RIZOMA_BASE: ${{ vars.RIZOMA_BASE || '/' }}
         run: npm run links
 
       - uses: actions/configure-pages@v6
