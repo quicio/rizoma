@@ -24,9 +24,9 @@ proyecto con subdominios estables.
    GitHub funcionen.
 5. Rizoma sigue embebido en kndl en `/rizoma/` durante la transición. La
    separación editorial del home de kndl es el paso siguiente del roadmap.
-6. Las URLs de `quicio.qzz.io` quedan obsoletas. Si se quieren conservar los
-   enlaces viejos, hace falta un redirect externo; GitHub Pages no conserva dos
-   custom domains a la vez.
+6. `quicio.qzz.io` se conserva como capa de redirects 301 hacia `quicio.org`.
+   GitHub Pages no conserva dos custom domains a la vez; el dominio viejo se
+   resuelve en Cloudflare con Redirect Rules, preservando path y query string.
 
 ## Orden de aplicación
 
@@ -49,6 +49,7 @@ responder.
 
 ## Referencias
 
+- `docs/dominios.md` — runbook de DNS, Pages y redirects.
 - `public/CNAME`
 - `.github/workflows/deploy.yml`
 - `quicio/rizoma`

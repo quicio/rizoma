@@ -175,6 +175,7 @@ Sistema y decisiones:
 - `docs/protocolo-cartografia.md` — roles, estados, instrumentos.
 - `docs/taxonomia-anexos.md` — tipos y estándares de anexo.
 - `docs/nota-diagram-design.md` — pipeline de las láminas.
+- `docs/dominios.md` — DNS, subdominios y redirects de `quicio.org`.
 
 Datos del build:
 
