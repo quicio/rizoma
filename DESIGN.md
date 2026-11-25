@@ -146,6 +146,8 @@ Una lámina a sangre: placa de terreno, arco orbital ocre, constelación de nodo
 
 El mapa es una herramienta, no una ilustración. Cada nodo es un enlace; las líneas marfil corresponden a una relación declarada en el archivo y las ocre indican co-presencia entre nodos compartidos. Los nodos compartidos son ocre; los de una sola deriva, marfil. La vista «Constelación» oculta las relaciones únicas; «Archivo» lleva a la lista textual. El panel de detalle se actualiza al enfocar un nodo y la lista inferior es la alternativa accesible.
 
+Las posiciones curadas viven en `POSITIONS` (`src/lib/cartography.ts`). Un nodo nuevo sin coordenada recibe una posición de reserva determinista —espiral áurea, con detección de colisiones— y el build emite un aviso con su nombre. Así ningún nodo desaparece del mapa, pero la composición fina sigue siendo una decisión editorial.
+
 ### Nodo / exploración
 
 Cabecera con número, título, pregunta, resumen y ficha (tipo, conexiones, corpus, estado, actualización). Rail sticky con mapa de lectura y nodos. Cuerpo de lectura con medida de 68 caracteres, corpus por sección, diagramas y respiros. Aparato colapsable con corpus, nodos, relacionadas, anexos, trayectoria e historial.

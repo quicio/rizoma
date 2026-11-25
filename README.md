@@ -60,6 +60,7 @@ src/
   pages/             # rutas: /, /nodos/, /aparato/, /[slug]/, /[slug]/anexos/..., /trayectoria/[id]/
   styles/style.css   # copia vendorizada de kndl000 (deuda: recortar)
   styles/rizoma.css  # identidad visual y de interfaz de Rizoma
+  lib/cartography.ts # posiciones curadas y reserva automática de nodos en el mapa
 docs/                # sistema: ADR, protocolo, taxonomía, punto de entrada
 trabajo/             # proceso editorial: banco, ciclos, adjuntos, lecturas, láminas
 taller/              # backoffice local-first (npm run taller)

@@ -59,9 +59,10 @@ contraste, mono de medición y una constelación de nodos.
   pero la capa nueva es la autoridad visual de Rizoma.
 - El contenido y las rutas se preservan. `/aparato/` es una ruta nueva y
   aditiva; no reemplaza `/[slug]/anexos/`.
-- El mapa depende de posiciones deterministas en `src/lib/cartography.ts`. Si
-  se agrega un nodo sin posición, no aparece en el mapa hasta que se le asigne
-  una; la lista textual sigue mostrándolo.
+- El mapa depende de posiciones deterministas en `src/lib/cartography.ts`. Un
+  nodo sin posición curada recibe una posición de reserva automática y el build
+  emite un aviso; la composición fina sigue requiriendo una coordenada en
+  `POSITIONS`.
 - La textura es un activo generado. Cualquier reemplazo debe conservar su
   prompt o su origen embebido.
 - El rediseño no modifica el protocolo editorial ni la taxonomía de anexos.

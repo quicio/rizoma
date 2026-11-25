@@ -12,6 +12,7 @@ export interface CartographyNode {
   r: number;
   label?: boolean;
   active?: boolean;
+  autoPlaced?: boolean;
 }
 
 export interface CartographyEdge {
@@ -43,7 +44,9 @@ interface NodoLike {
   data: { title: string; order?: string; definition?: string };
 }
 
-const POSITIONS: Record<string, { x: number; y: number; r?: number; label?: boolean; active?: boolean }> = {
+type Position = { x: number; y: number; r?: number; label?: boolean; active?: boolean };
+
+const POSITIONS: Record<string, Position> = {
   repeticion: { x: 500, y: 300, r: 10, label: true, active: true },
   memoria: { x: 575, y: 385, r: 8.5, label: true },
   archivo: { x: 430, y: 405, r: 8.5, label: true },
@@ -59,6 +62,38 @@ const POSITIONS: Record<string, { x: number; y: number; r?: number; label?: bool
   'exp-01': { x: 320, y: 350, r: 17 },
   'exp-02': { x: 780, y: 350, r: 17 },
 };
+
+const MAP_CENTER = { x: 500, y: 340 };
+const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
+const warnedFallbacks = new Set<string>();
+
+function distance(a: { x: number; y: number }, b: { x: number; y: number }): number {
+  return Math.hypot(a.x - b.x, a.y - b.y);
+}
+
+/**
+ * Posición de reserva para un nodo sin coordenada curada. Usa una espiral
+ * determinista y evita los nodos ya ubicados. No es una composición: es una
+ * red de seguridad para que ningún nodo desaparezca del mapa.
+ */
+function fallbackPosition(index: number, occupied: { x: number; y: number }[]): Position {
+  for (let attempt = 0; attempt < 220; attempt += 1) {
+    const angle = index * GOLDEN_ANGLE + attempt * (GOLDEN_ANGLE / 3);
+    const ring = 265 + Math.floor(attempt / 16) * 34;
+    const x = MAP_CENTER.x + Math.cos(angle) * ring;
+    const y = MAP_CENTER.y + Math.sin(angle) * ring * 0.82;
+    if (x < 60 || x > 940 || y < 45 || y > 635) continue;
+    if (occupied.every((point) => distance(point, { x, y }) > 44)) {
+      return { x: Math.round(x), y: Math.round(y), r: 5.5, label: false };
+    }
+  }
+  return {
+    x: 60 + (index % 12) * 74,
+    y: 70 + (Math.floor(index / 12) % 7) * 78,
+    r: 5.5,
+    label: false,
+  };
+}
 
 function curve(a: CartographyNode, b: CartographyNode, index: number): string {
   const mx = (a.x + b.x) / 2;
@@ -98,7 +133,8 @@ export function buildCartography(
   if (includeAnchors) {
     for (const [index, exploracion] of exploraciones.entries()) {
       const key = `exp-0${index + 1}`;
-      const pos = POSITIONS[key] || { x: 160 + index * 680, y: 350, r: 17 };
+      const occupied = nodes.map((node) => ({ x: node.x, y: node.y }));
+      const pos = POSITIONS[key] || fallbackPosition(index * 3 + 1, occupied);
       nodes.push({
         id: key,
         title: exploracion.data.title,
@@ -112,9 +148,34 @@ export function buildCartography(
     }
   }
 
+  const occupied = nodes.map((node) => ({ x: node.x, y: node.y }));
+  const fallbackPositions = new Map<string, Position>();
+  const missing: string[] = [];
+
+  for (const [index, nodo] of nodos.entries()) {
+    const key = slugify(nodo.data.title);
+    if (POSITIONS[key]) continue;
+    const pos = fallbackPosition(index + nodes.length, occupied);
+    fallbackPositions.set(key, pos);
+    occupied.push({ x: pos.x, y: pos.y });
+    missing.push(nodo.data.title);
+  }
+
+  if (missing.length > 0) {
+    const fresh = missing.filter((title) => !warnedFallbacks.has(title));
+    if (fresh.length > 0) {
+      fresh.forEach((title) => warnedFallbacks.add(title));
+      console.warn(
+        `[cartography] ${fresh.length} nodo(s) sin posición curada: ${fresh.join(', ')}. ` +
+          'Se ubicaron automáticamente. Agregá su coordenada en POSITIONS para controlar la composición.'
+      );
+    }
+  }
+
   for (const nodo of nodos) {
     const key = slugify(nodo.data.title);
-    const pos = POSITIONS[key];
+    const curated = POSITIONS[key];
+    const pos = curated || fallbackPositions.get(key);
     if (!pos) continue;
     const linked = usage.get(nodo.data.title) || [];
     nodes.push({
@@ -129,6 +190,7 @@ export function buildCartography(
       r: pos.r ?? 5,
       label: pos.label ?? linked.length > 1,
       active: pos.active ?? false,
+      autoPlaced: !curated,
     });
   }
 
