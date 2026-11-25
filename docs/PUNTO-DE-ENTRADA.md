@@ -86,6 +86,7 @@ Reglas:
 | [0010](adr/ADR-0010-dominio-quicio-org.md) | Dominio quicio.org y subdominios: kndl, rizoma y semina. |
 | [0011](adr/ADR-0011-identidad-cartografia-deriva.md) | Identidad visual y experiencia de cartografía de deriva. |
 | [0012](adr/ADR-0012-kndl-indice-rizoma.md) | kndl deja de embeber Rizoma: índice generado desde el repo y enlaces al sitio. |
+| [0013](adr/ADR-0013-vista-lectura-corpus.md) | Vista de lectura del corpus en un panel lateral, sin salir de la exploración. |
 
 ## Nueva exploración
 

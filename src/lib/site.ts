@@ -33,6 +33,11 @@ export function kndlHref(path: string): string {
   return KNDL_ORIGIN ? `${KNDL_ORIGIN}${path}` : path;
 }
 
+/** URL canónica de un recurso de KNDL para la vista de lectura. */
+export function kndlPreviewHref(path: string): string {
+  return new URL(path, KNDL_ORIGIN || 'https://kndl.quicio.org').href;
+}
+
 /** Inicio de KNDL (no de Rizoma). */
 export function kndlHome(): string {
   return KNDL_ORIGIN ? `${KNDL_ORIGIN}/` : '/';

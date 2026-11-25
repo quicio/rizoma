@@ -4,6 +4,7 @@ import '../styles/rizoma.css';
 import { SITE, absoluteUrl, withBase } from '../lib/site';
 import RizomaHeader from '../components/RizomaHeader.astro';
 import RizomaFooter from '../components/RizomaFooter.astro';
+import RizomaResource from '../components/RizomaResource.astro';
 
 interface Props {
   title?: string;
@@ -82,6 +83,8 @@ const classes = bodyClass
       <slot />
     </main>
     <RizomaFooter />
+    <RizomaResource />
     <script is:inline src={withBase('/rizoma-search.js')} defer></script>
+    <script is:inline src={withBase('/rizoma-corpus.js')} defer></script>
   </body>
 </html>

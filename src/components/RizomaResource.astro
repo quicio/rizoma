@@ -1,0 +1,33 @@
+---
+---
+
+<dialog class="rz-resource" id="rz-resource" aria-labelledby="rz-resource-title">
+  <div class="rz-resource__shell">
+    <header class="rz-resource__bar">
+      <div class="rz-resource__heading">
+        <p class="rz-resource__kind" data-resource-kind>Recurso</p>
+        <h2 class="rz-resource__title" id="rz-resource-title" data-resource-title>Recurso</h2>
+        <p class="rz-resource__meta" data-resource-meta></p>
+      </div>
+      <button class="rz-resource__close" type="button" data-resource-close aria-label="Cerrar vista del recurso">×</button>
+    </header>
+
+    <div class="rz-resource__scroll" data-resource-scroll>
+      <div class="rz-resource__loading" data-resource-loading>
+        <p class="rz-label">Abriendo el recurso</p>
+        <span></span><span></span><span></span>
+      </div>
+      <div class="rz-resource__error" data-resource-error hidden>
+        <p class="rz-label">No se pudo abrir la vista</p>
+        <p>El recurso no respondió o el navegador bloqueó la lectura. Podés abrirlo directamente en KNDL.</p>
+        <a class="rz-text-link" data-resource-error-link href="#" target="_blank" rel="noopener noreferrer">Abrir en KNDL <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="rz-resource__content" data-resource-content></div>
+    </div>
+
+    <footer class="rz-resource__foot">
+      <p>KNDL 000 · vista de lectura</p>
+      <a class="rz-resource__open" data-resource-link href="#" target="_blank" rel="noopener noreferrer">Abrir en KNDL <span aria-hidden="true">↗</span></a>
+    </footer>
+  </div>
+</dialog>

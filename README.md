@@ -55,7 +55,7 @@ docs/                # sistema: ADR, protocolo, taxonomía, punto de entrada
 trabajo/             # proceso editorial: banco, ciclos, adjuntos, lecturas, láminas
 taller/              # backoffice local-first (npm run taller)
 scripts/             # nueva-exploracion, build-lamina, check-links
-public/              # JS de rizoma-apparatus y rail-progress
+public/              # JS de búsqueda, mapa, corpus y aparato
 ```
 
 ## Contenido

@@ -1,5 +1,5 @@
 ---
-import { kndlHref } from '../lib/site';
+import { kndlHref, kndlPreviewHref } from '../lib/site';
 import type { Presentacion } from '../lib/data';
 
 interface Props {
@@ -24,7 +24,7 @@ const { diagrama } = Astro.props;
           diagrama.izquierda.obras.map((obra) => (
             <li>
               <span class="expediente__diagrama-kind">{obra.kind}</span>
-              <a href={kndlHref(obra.url)}>{obra.title}</a>
+              <a href={kndlHref(obra.url)} data-corpus-preview data-corpus-url={kndlPreviewHref(obra.url)} data-corpus-kind={obra.kind} data-corpus-title={obra.title} aria-haspopup="dialog" title={`Vista rápida: ${obra.title}`}>{obra.title}</a>
             </li>
           ))
         }
@@ -43,7 +43,7 @@ const { diagrama } = Astro.props;
           diagrama.derecha.obras.map((obra) => (
             <li>
               <span class="expediente__diagrama-kind">{obra.kind}</span>
-              <a href={kndlHref(obra.url)}>{obra.title}</a>
+              <a href={kndlHref(obra.url)} data-corpus-preview data-corpus-url={kndlPreviewHref(obra.url)} data-corpus-kind={obra.kind} data-corpus-title={obra.title} aria-haspopup="dialog" title={`Vista rápida: ${obra.title}`}>{obra.title}</a>
             </li>
           ))
         }

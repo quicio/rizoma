@@ -1,6 +1,6 @@
 ---
 import { materialFor } from '../lib/data';
-import { kndlHref } from '../lib/site';
+import { kndlHref, kndlPreviewHref } from '../lib/site';
 import type { CorpusItem } from '../lib/content';
 
 interface Props {
@@ -11,6 +11,10 @@ interface Props {
 
 const { items = [], only, compact = false } = Astro.props;
 const shown = only ? items.filter((item) => only.includes(item.url)) : items;
+
+function previewUrl(path: string): string {
+  return new URL(path, KNDL_ORIGIN || 'https://kndl.quicio.org').href;
+}
 ---
 
 <ul class:list={['expediente-corpus', { 'expediente-corpus--inline': compact }]}>
@@ -22,7 +26,15 @@ const shown = only ? items.filter((item) => only.includes(item.url)) : items;
       const sigil = item.sigil || material.sigil;
       return (
         <li class="expediente-corpus__item">
-          <a href={kndlHref(item.url)}>
+          <a
+            href={kndlHref(item.url)}
+            data-corpus-preview
+            data-corpus-url={kndlPreviewHref(item.url)}
+            data-corpus-kind={kind}
+            data-corpus-title={title}
+            aria-haspopup="dialog"
+            title={`Vista rápida: ${title}`}
+          >
             {material.glyph && (
               <span class:list={['sigil', sigil && `sigil--${sigil}`]} aria-hidden="true">
                 <span class="sigil__glyph">{material.glyph}</span>
@@ -30,6 +42,7 @@ const shown = only ? items.filter((item) => only.includes(item.url)) : items;
             )}
             {!compact && <span class="expediente-corpus__kind">{kind}</span>}
             <span class="expediente-corpus__title">{title}</span>
+            <span class="expediente-corpus__preview" aria-hidden="true">Vista</span>
           </a>
           {!compact && item.note && <p class="expediente-corpus__note">{item.note}</p>}
         </li>

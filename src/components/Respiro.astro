@@ -1,5 +1,5 @@
 ---
-import { kndlHref } from '../lib/site';
+import { kndlHref, kndlPreviewHref } from '../lib/site';
 
 interface Props {
   respiro: { texto: string; fuente: string; fuente_titulo: string };
@@ -12,7 +12,7 @@ const { respiro } = Astro.props;
   <blockquote class="expediente__respiro-texto" set:html={respiro.texto.replace(/\n/g, '<br />')} />
   {respiro.fuente && (
     <figcaption class="expediente__respiro-fuente">
-      <a href={kndlHref(respiro.fuente)}>{respiro.fuente_titulo || respiro.fuente}</a>
+      <a href={kndlHref(respiro.fuente)} data-corpus-preview data-corpus-url={kndlPreviewHref(respiro.fuente)} data-corpus-kind="Respiro" data-corpus-title={respiro.fuente_titulo || respiro.fuente} aria-haspopup="dialog" title={`Vista rápida: ${respiro.fuente_titulo || respiro.fuente}`}>{respiro.fuente_titulo || respiro.fuente}</a>
     </figcaption>
   )}
 </figure>

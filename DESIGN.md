@@ -160,6 +160,13 @@ Cabecera con número, título, pregunta, resumen y ficha (tipo, conexiones, corp
 
 Diálogo nativo sobre `rizoma-index.json`. Filtra exploraciones, nodos y anexos. Sin JavaScript, el icono lleva al mapa; el sitio sigue siendo navegable.
 
+
+### Vista de recurso del corpus
+
+Los enlaces de corpus, respiros y diagramas abren un `<dialog>` lateral de hasta 800 px. El panel hace fetch del recurso canónico de KNDL, extrae el contenido principal y lo presenta con la tipografía de Rizoma; no es un iframe ni una copia completa de la página. Conserva imágenes, cuerpo, listas y bloques de código, y elimina navegación, scripts, formularios, estilos y atributos peligrosos.
+
+El encabezado muestra tipo, título y metadatos reales. El pie mantiene **Abrir en KNDL ↗** y el estado de error repite ese enlace. La carga se precarga al enfocar o pasar el cursor y se cachea en memoria. En móvil el panel ocupa la pantalla completa. Sin JavaScript, el enlace sigue llevando a KNDL.
+
 ## Textura y material
 
 La placa de terreno vive en `public/assets/plates/terrain.webp` (el PNG fuente y la referencia de la comp quedan en `assets/plates/terrain.png`). Se genera con un prompt registrado en el propio archivo mediante `impeccable embed-prompt`: superficie mineral oscura, curvas topográficas tenues, grano analógico, sin texto ni símbolos. Se usa a sangre en la portada y en el escenario del mapa, y como muestra en el mini-mapa del nodo. Siempre va oscurecida y con un velo de carbón; nunca compite con el texto.
@@ -188,8 +195,9 @@ El grano global es un `feTurbulence` en `body.rizoma::before`, a opacidad 0.035.
 - `src/styles/rizoma.css` — sistema visual y de interfaz.
 - `src/components/RizomaHeader.astro`, `RizomaFooter.astro`, `RizomaBrand.astro`.
 - `src/components/Cartography.astro` — constelación SVG.
+- `src/components/RizomaResource.astro` — vista de lectura del corpus.
 - `src/lib/cartography.ts` — posiciones y relaciones reales.
-- `public/rizoma-search.js`, `public/rizoma-map.js`, `public/rizoma-map-page.js`.
+- `public/rizoma-search.js`, `public/rizoma-map.js`, `public/rizoma-map-page.js`, `public/rizoma-corpus.js`.
 - `public/media/rizoma/glyph.svg`, `public/assets/plates/terrain.webp`.
 
 ## Accesibilidad
@@ -199,5 +207,7 @@ El grano global es un `feTurbulence` en `body.rizoma::before`, a opacidad 0.035.
 - Los nodos filtrados u ocultos por la vista «Constelación» salen del orden de tabulación y del árbol de accesibilidad.
 - El mini-mapa del nodo es decorativo: `tabindex="-1"` y `pointer-events: none`.
 - Foco visible en enlaces, botones y nodos SVG; el nodo enfocado cambia el trazo y la etiqueta.
-- La búsqueda usa un `<dialog>` nativo; sin JavaScript el icono lleva al mapa.
-- `prefers-reduced-motion` desactiva el dibujo de aristas, el pulso y las transiciones.
+- La búsqueda y la vista del corpus usan `<dialog>` nativo; el foco vuelve al enlace de origen al cerrar.
+- La vista del corpus sanitiza el HTML remoto: sin scripts, handlers, estilos ni iframes.
+- Sin JavaScript, el icono de búsqueda lleva al mapa y los enlaces de corpus llevan a KNDL.
+- `prefers-reduced-motion` desactiva el dibujo de aristas, el pulso, el panel y las transiciones.

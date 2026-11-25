@@ -32,6 +32,7 @@ No es un blog, una tesis ni una colección de publicaciones. Es una cartografía
 - El aparato agrupa anexos por operación: corrección, fuente, concepto, objeción y derivación.
 - Las láminas están retiradas de la publicación; sus artefactos quedan en `trabajo/laminas/`.
 - El lector puede entrar por índice, mapa, nodo, corpus o búsqueda. La búsqueda es estática, sin backend ni tracking, y filtra exploraciones, nodos y anexos.
+- Las piezas del corpus se pueden leer en un panel lateral sin abandonar la exploración. La vista extrae el recurso exacto de KNDL en el cliente, lo sanitiza y ofrece siempre el enlace a la versión original; no incrusta la página completa.
 - kndl000 construye su propio `/rizoma/` como índice: no embebe el build de Astro, lee el contenido y las cartografías de este repo y enlaza a `rizoma.quicio.org`.
 
 ## Capabilities and Constraints
