@@ -2,7 +2,7 @@
 
 Sitio independiente de **Rizoma**, la sección de exploraciones abiertas de
 [KNDL 000](https://kndl.quicio.org). Construido con [Astro](https://astro.build)
-y markdown. Se puede desplegar solo o embeber en kndl000 en `/rizoma/`.
+y markdown. kndl000 lee este repo para su índice y enlaza acá.
 
 Sitio: **https://rizoma.quicio.org/**
 Identidad: [`DESIGN.md`](DESIGN.md) · decisión: [ADR 0011](docs/adr/ADR-0011-identidad-cartografia-deriva.md)
@@ -15,12 +15,6 @@ npm install
 npm run dev
 ```
 
-Build embebido en kndl (base `/rizoma`):
-
-```bash
-RIZOMA_BASE=/rizoma npm run build
-```
-
 Build independiente con enlaces absolutos al corpus de KNDL:
 
 ```bash
@@ -30,21 +24,17 @@ RIZOMA_BASE=/ RIZOMA_KNDL_ORIGIN=https://kndl.quicio.org npm run build
 Verificación de enlaces internos:
 
 ```bash
-RIZOMA_BASE=/ npm run links          # dominio propio
-RIZOMA_BASE=/rizoma npm run links    # embed en kndl
+npm run links
 ```
 
 ## Modos de publicación
 
 | Modo | `RIZOMA_BASE` | `RIZOMA_KNDL_ORIGIN` | Uso |
 |---|---|---|---|
-| Embebido en kndl | `/rizoma` | vacío | kndl copia `dist/` en `_site/rizoma/` |
-| Independiente (dominio propio) | `/` | `https://kndl.quicio.org` | `rizoma.quicio.org` |
-| Project page heredada | `/rizoma` | `https://kndl.quicio.org` | `quicio.github.io/rizoma` |
+| Dominio propio | `/` | `https://kndl.quicio.org` | `rizoma.quicio.org` |
 
-En modo embebido los enlaces a poemas, código, dispositivos y vestigios quedan
-root-relative y los resuelve kndl. En modo independiente se vuelven absolutos
-hacia KNDL.
+Los enlaces a poemas, código, dispositivos y vestigios se vuelven absolutos
+hacia `kndl.quicio.org`.
 
 ## Estructura
 
@@ -83,18 +73,17 @@ Reglas editoriales: ver [`docs/PUNTO-DE-ENTRADA.md`](docs/PUNTO-DE-ENTRADA.md)
 y la taxonomía de anexos. La decisión de extracción está en
 [`docs/adr/ADR-0008-extraccion-de-rizoma.md`](docs/adr/ADR-0008-extraccion-de-rizoma.md).
 
-## Embeber en kndl000
+## Índice en kndl000
 
-Desde kndl000:
+kndl000 no copia el sitio. Un generator de Jekyll lee
+`src/content/exploraciones`, `src/content/nodos` y `src/data/cartografias` de
+este repo y genera:
 
-```bash
-bash scripts/build-rizoma.sh          # RIZOMA_DIR=../rizoma por defecto
-node scripts/check-links.mjs
-```
+- `/rizoma/` en kndl, con el índice de exploraciones.
+- el bloque de últimas exploraciones del home.
+- redirects de las URLs viejas del embed.
 
-El script construye este repo con `RIZOMA_BASE=/rizoma`, actualiza
-`_data/rizoma_index.json`, construye Jekyll y copia `dist/` en `_site/rizoma/`.
-En CI, kndl hace checkout de este repositorio antes de correr el script.
+En CI, kndl hace checkout de `quicio/rizoma` en `rizoma-src`.
 
 ## Desplegar solo
 

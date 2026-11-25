@@ -113,6 +113,6 @@ Rules.
 - `quicio.org` es canónico.
 - `quicio.qzz.io` responde 301, no 200.
 - No mantener dos copias indexables del mismo contenido.
-- Rizoma embebido en kndl sigue canonalizando a `kndl.quicio.org/rizoma/`
-  mientras dure la transición. Cuando Rizoma tenga identidad propia, el embed
-  se retira y el canonical pasa a `rizoma.quicio.org`.
+- Rizoma canónico es `rizoma.quicio.org`.
+- kndl publica un índice en `/rizoma/` y enlaza; no copia el sitio.
+- Las URLs viejas de `kndl.quicio.org/rizoma/<slug>/` redirigen a Rizoma.

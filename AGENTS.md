@@ -19,5 +19,5 @@ contexto; los ADR son la fuente de las decisiones.
   historial en build time.
 - `RIZOMA_BASE` define la subruta; `RIZOMA_KNDL_ORIGIN` define si los enlaces al
   corpus de KNDL son root-relative o absolutos.
-- No agregues lógica de kndl a este repo. Rizoma es independiente; kndl lo
-  embebe como artefacto.
+- No agregues lógica de kndl a este repo. Rizoma es independiente; kndl lee
+  `src/content` y `src/data/cartografias` para su índice y no copia el sitio.
