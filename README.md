@@ -90,9 +90,8 @@ En CI, kndl hace checkout de `quicio/rizoma` en `rizoma-src`.
 El workflow `.github/workflows/deploy.yml` construye y publica en GitHub Pages.
 Configurá las variables del repositorio:
 
-- `RIZOMA_SITE`: origen canónico (por defecto `https://rizoma.quicio.org`). En el
-  build embebido, kndl pasa `https://kndl.quicio.org`.
-- `RIZOMA_BASE`: `/` para `rizoma.quicio.org`; `/rizoma` solo para el embed o una project page heredada.
+- `RIZOMA_SITE`: origen canónico (por defecto `https://rizoma.quicio.org`).
+- `RIZOMA_BASE`: `/` para `rizoma.quicio.org`; una subruta como `/rizoma` solo si el sitio se sirve bajo un prefijo. kndl ya no copia el build.
 - `RIZOMA_KNDL_ORIGIN`: `https://kndl.quicio.org` para enlazar el corpus.
 - `PUBLIC_GA4_ID`: opcional.
 

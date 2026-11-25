@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-Astro 7 en modo estático, contenido Markdown en `src/content/`, resolución de datos en build time (`src/lib/`) y CSS propio sin framework de UI. El JavaScript del sitio solo mejora navegación y movimiento. Se publica en `rizoma.quicio.org` y también puede embeberse como artefacto estático en KNDL bajo `/rizoma/`.
+Astro 7 en modo estático, contenido Markdown en `src/content/`, resolución de datos en build time (`src/lib/`) y CSS propio sin framework de UI. El JavaScript del sitio solo mejora navegación y movimiento. Se publica en `rizoma.quicio.org`; kndl lee `src/content` y `src/data/cartografias` para su índice y enlaza al sitio, sin copiarlo.
 
 ## Users
 
@@ -32,11 +32,12 @@ No es un blog, una tesis ni una colección de publicaciones. Es una cartografía
 - El aparato agrupa anexos por operación: corrección, fuente, concepto, objeción y derivación.
 - Las láminas están retiradas de la publicación; sus artefactos quedan en `trabajo/laminas/`.
 - El lector puede entrar por índice, mapa, nodo, corpus o búsqueda. La búsqueda es estática, sin backend ni tracking, y filtra exploraciones, nodos y anexos.
+- kndl000 construye su propio `/rizoma/` como índice: no embebe el build de Astro, lee el contenido y las cartografías de este repo y enlaza a `rizoma.quicio.org`.
 
 ## Capabilities and Constraints
 
 - Rutas actuales que deben preservarse: `/`, `/[slug]/`, `/nodos/`, `/[slug]/anexos/`, `/[slug]/anexos/[anexo]/`, `/[slug]/historial/` y `/trayectoria/[id]/`. Se agrega `/aparato/` como índice global de anexos.
-- Builds con `RIZOMA_BASE=/` (dominio propio) y `RIZOMA_BASE=/rizoma` (embebido en KNDL); los enlaces al corpus de KNDL se resuelven con `RIZOMA_KNDL_ORIGIN`.
+- Build con `RIZOMA_BASE=/` para el dominio propio; `RIZOMA_KNDL_ORIGIN` resuelve los enlaces al corpus de KNDL. Una subruta (`/rizoma`) sigue siendo posible, pero kndl ya no copia el sitio.
 - No hay CMS, base de datos, login, newsletter ni backend de búsqueda.
 - El contenido y las rutas no se reescriben para el rediseño. La prosa, los títulos, las preguntas y las fuentes son del autor.
 - No introducir dependencias de runtime innecesarias. Preferir HTML, CSS y SVG; el sitio funciona sin JavaScript.
