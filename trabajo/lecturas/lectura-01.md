@@ -22,7 +22,7 @@ tienen cuerpo.
 - `PRODUCT.md`, `DESIGN.md`, `docs/VISUAL-IDENTITY.md` (histórico),
   `_data/navigation.yml`.
 - `docs/rizoma/cartografia-repeticion-01.html` (sin commitear).
-- Páginas publicadas en `kndl.quicio.qzz.io`: `/rizoma/`, la exploración y su
+- Páginas publicadas en `kndl.quicio.org`: `/rizoma/`, la exploración y su
   `/historial/`.
 
 No hubo acceso a fuentes externas en esta sesión. Todas las referencias que

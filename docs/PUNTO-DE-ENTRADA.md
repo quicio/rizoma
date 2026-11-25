@@ -83,6 +83,7 @@ Reglas:
 | [0007](adr/ADR-0007-trama-composicion-cartografia.md) | Trama, composición y cartografía: piloto B3.1.1, no normativo fuera del piloto. |
 | [0008](adr/ADR-0008-extraccion-de-rizoma.md) | Extracción a repo Astro independiente, embebido en kndl por artefacto estático. |
 | [0009](adr/ADR-0009-separacion-de-contenido-proceso-sistema.md) | Contenido público, proceso editorial, sistema y datos en capas separadas. |
+| [0010](adr/ADR-0010-dominio-quicio-org.md) | Dominio quicio.org y subdominios: kndl, rizoma y semina. |
 
 ## Nueva exploración
 
@@ -174,6 +175,7 @@ Sistema y decisiones:
 - `docs/protocolo-cartografia.md` — roles, estados, instrumentos.
 - `docs/taxonomia-anexos.md` — tipos y estándares de anexo.
 - `docs/nota-diagram-design.md` — pipeline de las láminas.
+- `docs/dominios.md` — DNS, subdominios y redirects de `quicio.org`.
 
 Datos del build:
 

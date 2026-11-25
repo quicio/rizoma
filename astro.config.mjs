@@ -6,7 +6,7 @@ import { defineConfig } from 'astro/config';
 // RIZOMA_SITE define el origen canónico (kndl o el dominio propio).
 const rawBase = process.env.RIZOMA_BASE || '/';
 const base = rawBase === '/' ? '/' : `/${rawBase.replace(/^\/+|\/+$/g, '')}`;
-const site = (process.env.RIZOMA_SITE || 'https://kndl.quicio.qzz.io').replace(/\/$/, '');
+const site = (process.env.RIZOMA_SITE || 'https://kndl.quicio.org').replace(/\/$/, '');
 
 export default defineConfig({
   site,
