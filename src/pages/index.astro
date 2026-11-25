@@ -1,53 +1,222 @@
 ---
 import Base from '../layouts/Base.astro';
-import SectionRail from '../components/SectionRail.astro';
-import { listExploraciones } from '../lib/content';
+import Cartography from '../components/Cartography.astro';
+import { listExploraciones, listNodos, allAnexos, exploracionSlugFromUrl } from '../lib/content';
+import { buildCartography } from '../lib/cartography';
+import { loadAnexoTipos } from '../lib/data';
 import { kndlHome, withBase } from '../lib/site';
 
 const exploraciones = listExploraciones();
+const nodos = listNodos();
+const anexos = allAnexos();
+const tipos = loadAnexoTipos();
+const cartography = buildCartography(exploraciones, nodos);
+const updated = exploraciones.map((item) => item.data.updated).filter(Boolean).sort().at(-1);
+
+const shared = cartography.nodes.filter((node) => node.shared);
+const counts = {
+  exploraciones: String(exploraciones.length).padStart(2, '0'),
+  nodos: String(nodos.length).padStart(2, '0'),
+  anexos: String(anexos.length).padStart(2, '0'),
+};
+
+const anexosPreview = anexos.slice(0, 5).map((anexo) => {
+  const parentSlug = exploracionSlugFromUrl(anexo.data.exploracion as string | undefined);
+  const tipo = tipos.find((item) => item.id === anexo.data.tipo);
+  return {
+    title: anexo.data.title,
+    tipo: tipo?.label ?? 'Anexo',
+    estado: anexo.data.estado ?? 'abierto',
+    href: parentSlug ? withBase(`/${parentSlug}/anexos/${anexo.slug}/`) : withBase('/aparato/'),
+  };
+});
 ---
 
-<Base title="Rizoma" description="Rizoma — KNDL 000. Exploraciones abiertas, nodos provisionales y un mapa que se construye al recorrerlo.">
-  <h1 class="page-title" aria-label="Rizoma">
-    <span class="page-title__text">
-      <span class="sigil sigil--rizoma" aria-hidden="true"><span class="sigil__glyph">⋔</span></span>
-      Rizoma
-    </span>
-    <span class="init"><a href={kndlHome()} aria-label="Inicio">∅ INIT</a></span>
-  </h1>
+<Base
+  title="Rizoma"
+  seoTitle="Rizoma · Cartografía de deriva"
+  description="Rizoma — exploraciones abiertas de KNDL. Un territorio de ideas en conexión: derivas, nodos y un mapa que se construye al recorrerlo."
+  bodyClass="rizoma rizoma-home"
+>
+  <section class="rz-hero" aria-labelledby="rz-hero-title">
+    <div class="rz-hero__plate" aria-hidden="true">
+      <img src={withBase('/assets/plates/terrain.webp')} alt="" loading="eager" decoding="async" />
+    </div>
+    <div class="rz-hero__veil" aria-hidden="true"></div>
 
-  <p class="rizoma-lede">Un espacio para explorar ideas, descomponer conceptos y encontrar relaciones entre territorios aparentemente distantes.</p>
+    <div class="rz-hero__rail" aria-hidden="true">
+      <span class="rz-hero__rail-top">RZ / 2026</span>
+      <span class="rz-hero__rail-line"></span>
+      <span class="rz-hero__rail-bottom">{counts.nodos} NODOS</span>
+    </div>
 
-  <div class="rizoma-declaration">
-    <p>Cada exploración comienza con una intuición, una pregunta o un fenómeno. A partir de ahí, las ideas se desplazan, se fragmentan, se conectan y vuelven a aparecer bajo otras formas.</p>
-    <p>No hay un recorrido predeterminado ni una conclusión obligatoria. Hay lecturas, referencias, poemas, código, experimentos y fragmentos que se incorporan al proceso.</p>
-    <p>Algunas ideas persisten. Otras se transforman, se contradicen o abren nuevas exploraciones.</p>
-    <p class="rizoma-declaration__close">El mapa permanece abierto.</p>
-  </div>
+    <div class="rz-hero__content">
+      <p class="rz-kicker">Rizoma / Cartografía de deriva</p>
+      <h1 class="rz-hero__title" id="rz-hero-title">Un territorio de ideas en conexión.</h1>
+      <p class="rz-hero__lede">Explorá conexiones, multiplicidades y derivas. Cada nodo es una entrada. Vos elegís el camino.</p>
 
-  <div class="rizoma-index">
-    {exploraciones.length === 0 && <p class="reading-empty">Todavía no hay exploraciones abiertas.</p>}
-    {
-      exploraciones.map((exploracion) => (
-        <article class="expediente-item">
-          <span class="expediente-item__num">{exploracion.data.order}</span>
-          <div class="expediente-item__body">
-            <h2 class="expediente-item__title"><a href={withBase(`/${exploracion.slug}/`)}>{exploracion.data.title}</a></h2>
-            {exploracion.data.question && <p class="expediente-item__question">{exploracion.data.question}</p>}
-            <p class="expediente-item__meta">
-              {exploracion.data.nodos?.length ? `${exploracion.data.nodos.length} nodos · ` : ''}
-              {exploracion.data.corpus?.length ?? 0} piezas · {exploracion.data.status}
-              {exploracion.data.updated ? ` · ${exploracion.data.updated}` : ''}
-            </p>
-          </div>
-        </article>
-      ))
-    }
-  </div>
+      <div class="rz-hero__actions">
+        <a class="rz-button rz-button--solid" href={withBase('/nodos/')}>
+          Explorar el mapa
+          <span aria-hidden="true">→</span>
+        </a>
+        <a class="rz-button rz-button--ghost" href="#exploraciones">Ver índice</a>
+      </div>
 
-  <p class="rizoma-nodos-link">
-    <a href={withBase('/nodos/')}>Ver los nodos →</a>
-  </p>
+      <p class="rz-hero__meta">
+        <span>{counts.exploraciones} exploraciones</span>
+        <span>{counts.nodos} nodos</span>
+        <span>{counts.anexos} anexos</span>
+      </p>
+    </div>
 
-  <SectionRail />
+    <div class="rz-hero__constellation">
+      <Cartography cartography={cartography} mode="hero" activeId="repeticion" />
+    </div>
+
+    <div class="rz-hero__foot">
+      <div class="rz-scale" aria-hidden="true">
+        <span class="rz-scale__line"></span>
+        <span>{counts.exploraciones} exp</span><span>{counts.nodos} nodos</span><span>{counts.anexos} anexos</span>
+      </div>
+      <p class="rz-hero__foot-meta">RZ–2026 / act. {updated ?? '—'} / mapa abierto</p>
+    </div>
+  </section>
+
+  <section class="rz-opening" aria-labelledby="rz-opening-title">
+    <div class="rz-section-mark">
+      <p class="rz-label">Apertura</p>
+      <p class="rz-section-count">§ 00</p>
+    </div>
+    <div class="rz-opening__body">
+      <h2 class="rz-serif-lead" id="rz-opening-title">El mapa permanece abierto.</h2>
+      <p>Rizoma reúne exploraciones que comienzan con una intuición, una pregunta o un fenómeno. A partir de ahí, las ideas se desplazan, se fragmentan, se conectan y vuelven a aparecer bajo otras formas.</p>
+      <p>No hay un recorrido predeterminado ni una conclusión obligatoria. Hay lecturas, referencias, poemas, código, experimentos y fragmentos que se incorporan al proceso.</p>
+      <p>Algunas ideas persisten. Otras se transforman, se contradicen o abren nuevas exploraciones.</p>
+    </div>
+  </section>
+
+  <section class="rz-explorations" id="exploraciones" aria-labelledby="rz-explorations-title">
+    <header class="rz-section-head">
+      <div class="rz-section-mark">
+        <p class="rz-label">01 — Exploraciones</p>
+        <p class="rz-section-count">{counts.exploraciones} derivas</p>
+      </div>
+      <h2 class="rz-section-title" id="rz-explorations-title">Derivas en curso</h2>
+      <p class="rz-section-lede">Cada entrada es un nodo del mapa: una pregunta que se desplaza y un aparato que la sostiene.</p>
+    </header>
+
+    <div class="rz-index-list">
+      {
+        exploraciones.map((exploracion, index) => {
+          const order = String(exploracion.data.order ?? index + 1).padStart(2, '0');
+          const linked = cartography.nodes.filter(
+            (node) => !node.id.startsWith('exp-') && node.exploraciones.includes(exploracion.slug)
+          );
+          return (
+            <article class="rz-entry">
+              <div class="rz-entry__order" aria-hidden="true">{order}</div>
+              <div class="rz-entry__body">
+                <p class="rz-entry__kicker">
+                  Exploración {order} <span>·</span> {exploracion.data.status}
+                </p>
+                <h3 class="rz-entry__title">
+                  <a href={withBase(`/${exploracion.slug}/`)}>{exploracion.data.title}</a>
+                </h3>
+                {exploracion.data.question && (
+                  <p class="rz-entry__question">{exploracion.data.question}</p>
+                )}
+                {exploracion.data.summary && (
+                  <p class="rz-entry__summary">{exploracion.data.summary}</p>
+                )}
+                <p class="rz-entry__meta">
+                  {exploracion.data.nodos?.length ?? 0} nodos · {exploracion.data.corpus?.length ?? 0} piezas
+                  {exploracion.data.updated ? ` · actualizado ${exploracion.data.updated}` : ''}
+                </p>
+                <p class="rz-entry__nodes">
+                  {linked.slice(0, 5).map((node) => (
+                    <a href={withBase(`/nodos/#${node.id}`)}>{node.title}</a>
+                  ))}
+                </p>
+              </div>
+              <a class="rz-entry__arrow" href={withBase(`/${exploracion.slug}/`)} aria-label={`Leer ${exploracion.data.title}`}>→</a>
+            </article>
+          );
+        })
+      }
+    </div>
+  </section>
+
+  <section class="rz-map-section" id="mapa" aria-labelledby="rz-map-title-section">
+    <div class="rz-section-mark rz-section-mark--light">
+      <p class="rz-label">02 — Mapa</p>
+      <p class="rz-section-count">{counts.nodos} nodos · {shared.length} compartidos</p>
+    </div>
+
+    <div class="rz-map-section__head">
+      <h2 class="rz-section-title" id="rz-map-title-section">Un mapa de relaciones, no de categorías.</h2>
+      <p class="rz-section-lede">Los nodos son palabras que aparecen en dos cuerpos con sentidos distintos. El ocre marca lo compartido; el marfil, lo que cada deriva abre por su cuenta.</p>
+    </div>
+
+    <div class="rz-map-section__grid">
+      <div class="rz-map-section__map" role="region" aria-label="Constelación de nodos y exploraciones">
+        <Cartography cartography={cartography} mode="full" activeId="repeticion" />
+        <p class="rz-map-caption">Fig. 01 · constelación de {nodos.length} nodos y {exploraciones.length} exploraciones. Las líneas marfil siguen las relaciones declaradas; las ocre indican co-presencia entre nodos compartidos.</p>
+      </div>
+      <div class="rz-map-section__side">
+        <p class="rz-label">Nodos compartidos</p>
+        <ul class="rz-shared-list">
+          {
+            shared.map((node, index) => (
+              <li>
+                <span class="rz-shared-list__num">{String(index + 1).padStart(2, '0')}</span>
+                <a href={withBase(`/nodos/#${node.id}`)}>{node.title}</a>
+                <span class="rz-shared-list__count">{node.exploraciones.length} derivas</span>
+              </li>
+            ))
+          }
+        </ul>
+        <a class="rz-text-link" href={withBase('/nodos/')}>Abrir el mapa completo <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="rz-apparatus" id="aparato" aria-labelledby="rz-apparatus-title">
+    <header class="rz-section-head">
+      <div class="rz-section-mark">
+        <p class="rz-label">03 — Aparato</p>
+        <p class="rz-section-count">{counts.anexos} anexos</p>
+      </div>
+      <h2 class="rz-section-title" id="rz-apparatus-title">Lo que sostiene la deriva.</h2>
+      <p class="rz-section-lede">Correcciones, objeciones, fuentes y conceptos. No todo anexo es una errata: cada uno declara una operación sobre la investigación.</p>
+    </header>
+
+    <ul class="rz-apparatus-list">
+      {
+        anexosPreview.map((anexo, index) => (
+          <li>
+            <span class="rz-apparatus-list__num">{String(index + 1).padStart(2, '0')}</span>
+            <a class="rz-apparatus-list__title" href={anexo.href}>{anexo.title}</a>
+            <span class="rz-apparatus-list__type">{anexo.tipo}</span>
+            <span class="rz-apparatus-list__state">{anexo.estado}</span>
+          </li>
+        ))
+      }
+    </ul>
+
+    <a class="rz-text-link" href={withBase('/aparato/')}>Ver todo el aparato <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="rz-closing" aria-labelledby="rz-closing-title">
+    <p class="rz-label">Cierre provisional</p>
+    <h2 class="rz-closing__title" id="rz-closing-title">El mapa permanece abierto.</h2>
+    <p class="rz-closing__text">No hay un centro fijo ni un recorrido obligatorio. Hay una pregunta, un archivo y una manera de volver a leerla.</p>
+    <p class="rz-closing__links">
+      <a href={withBase('/nodos/')}>Entrar por el mapa</a>
+      <a href={withBase('/#exploraciones')}>Entrar por el índice</a>
+      <a href={kndlHome()}>Volver a KNDL</a>
+    </p>
+  </section>
 </Base>
+
+<script is:inline src={withBase('/rizoma-map.js')} defer></script>

@@ -3,13 +3,27 @@ import { kndlHome, withBase } from '../lib/site';
 
 interface Props {
   exploracionUrl?: string;
+  exploracionTitle?: string;
+  current?: string;
 }
 
-const { exploracionUrl } = Astro.props;
+const { exploracionUrl, exploracionTitle, current } = Astro.props;
 ---
 
-<nav class="reading-breadcrumb" aria-label="Ruta">
-  <a href={withBase('/')}>← Rizoma</a>
-  {exploracionUrl && <a href={exploracionUrl}>← Exploración</a>}
-  <a href={kndlHome()} aria-label="Inicio">∅ INIT</a>
+<nav class="reading-breadcrumb rz-breadcrumb" aria-label="Ruta">
+  <a href={withBase('/')}>Rizoma</a>
+  {exploracionUrl && (
+    <>
+      <span aria-hidden="true">/</span>
+      <a href={exploracionUrl}>{exploracionTitle || 'Exploración'}</a>
+    </>
+  )}
+  {current && (
+    <>
+      <span aria-hidden="true">/</span>
+      <span class="rz-breadcrumb__current" aria-current="page">{current}</span>
+    </>
+  )}
+  <span aria-hidden="true">/</span>
+  <a href={kndlHome()}>KNDL</a>
 </nav>

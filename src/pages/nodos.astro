@@ -1,50 +1,131 @@
 ---
 import Base from '../layouts/Base.astro';
-import SectionRail from '../components/SectionRail.astro';
-import BackButton from '../components/BackButton.astro';
-import { listExploraciones, listNodos } from '../lib/content';
-import { kndlHome, withBase } from '../lib/site';
+import Cartography from '../components/Cartography.astro';
+import { listNodos, listExploraciones } from '../lib/content';
+import { buildCartography } from '../lib/cartography';
+import { withBase } from '../lib/site';
 
 const nodos = listNodos();
 const exploraciones = listExploraciones();
+const cartography = buildCartography(exploraciones, nodos);
+const shared = cartography.nodes.filter((node) => node.shared);
+
+function linkedFor(title: string) {
+  return exploraciones.filter((exploracion) => (exploracion.data.nodos || []).includes(title));
+}
+
+const counts = {
+  total: String(nodos.length).padStart(2, '0'),
+  shared: String(shared.length).padStart(2, '0'),
+  exp01: String(nodos.filter((nodo) => (exploraciones[0]?.data.nodos || []).includes(nodo.data.title)).length).padStart(2, '0'),
+  exp02: String(nodos.filter((nodo) => (exploraciones[1]?.data.nodos || []).includes(nodo.data.title)).length).padStart(2, '0'),
+};
 ---
 
-<Base title="Nodos" description="Nodos de Rizoma — KNDL 000. Puntos de conexión provisionales entre exploraciones.">
-  <h1 class="page-title" aria-label="Nodos">
-    <span class="page-title__text">
-      <span class="sigil sigil--rizoma" aria-hidden="true"><span class="sigil__glyph">⋔</span></span>
-      Nodos
-    </span>
-    <span class="init"><a href={kndlHome()} aria-label="Inicio">∅ INIT</a></span>
-  </h1>
+<Base
+  title="Mapa de nodos"
+  description={`Mapa de nodos de Rizoma: ${nodos.length} conceptos que aparecen en ${exploraciones.length} exploraciones y cambian de sentido. Una herramienta para recorrer relaciones.`}
+  bodyClass="rizoma rizoma-map-page"
+>
+  <header class="rz-page-head">
+    <div class="rz-page-head__mark">
+      <p class="rz-label">Mapa / {counts.total} nodos</p>
+      <p class="rz-section-count">{counts.shared} compartidos · {exploraciones.length} derivas</p>
+    </div>
+    <div class="rz-page-head__body">
+      <h1 class="rz-page-title">Mapa de nodos</h1>
+      <p class="rz-page-lede">Puntos de conexión, no categorías. Cada nodo reúne exploraciones donde una idea aparece y cambia de sentido. Las definiciones son provisorias.</p>
+    </div>
+  </header>
 
-  <p class="rizoma-lede">Puntos de conexión, no categorías. Cada nodo reúne exploraciones donde una idea aparece y cambia de sentido. Las definiciones son provisorias.</p>
+  <div class="rz-map-page">
+    <aside class="rz-map-panel" aria-label="Controles del mapa">
+      <div class="rz-map-panel__block">
+        <p class="rz-label">Vista</p>
+        <div class="rz-view-switch" role="group" aria-label="Modo de visualización">
+          <button type="button" class="is-active" data-map-view="red" aria-pressed="true">Red</button>
+          <button type="button" data-map-view="constelacion" aria-pressed="false">Constelación</button>
+          <a href="#nodos-lista" class="rz-view-archive">Archivo</a>
+        </div>
+      </div>
 
-  <div class="nodos">
-    {
-      nodos.map((nodo) => {
-        const vinculadas = exploraciones.filter((exploracion) =>
-          (exploracion.data.nodos || []).includes(nodo.data.title)
-        );
-        return (
-          <section class="nodo" id={nodo.slug}>
-            <h2 class="nodo__title">{nodo.data.title}</h2>
-            <p class="nodo__definition">{nodo.data.definition}</p>
-            {vinculadas.length > 0 ? (
-              <ul class="nodo__list">
-                {vinculadas.map((exploracion) => (
-                  <li><a href={withBase(`/${exploracion.slug}/`)}>{exploracion.data.title}</a></li>
-                ))}
-              </ul>
-            ) : (
-              <p class="nodo__empty">Todavía sin exploraciones.</p>
-            )}
-          </section>
-        );
-      })
-    }
+      <div class="rz-map-panel__block">
+        <p class="rz-label">Filtrar</p>
+        <div class="rz-filter-group" role="group" aria-label="Filtrar nodos">
+          <button type="button" class="is-active" data-map-filter="all" aria-pressed="true">Todos <span>{counts.total}</span></button>
+          <button type="button" data-map-filter="exp-01" aria-pressed="false">Exploración 01 <span>{counts.exp01}</span></button>
+          <button type="button" data-map-filter="exp-02" aria-pressed="false">Exploración 02 <span>{counts.exp02}</span></button>
+          <button type="button" data-map-filter="shared" aria-pressed="false">Compartidos <span>{counts.shared}</span></button>
+        </div>
+      </div>
+
+      <div class="rz-map-panel__block rz-map-panel__detail" data-map-detail aria-live="polite">
+        <p class="rz-label">Nodo activo</p>
+        <p class="rz-map-detail__title">Repetición</p>
+        <p class="rz-map-detail__definition">Lo que vuelve, y lo que cambia al volver.</p>
+        <p class="rz-map-detail__meta">2 derivas · nodo compartido</p>
+        <a class="rz-text-link" href={withBase('/nodos/#repeticion')}>Ver ficha <span aria-hidden="true">→</span></a>
+      </div>
+
+      <div class="rz-map-panel__legend">
+        <p><span class="rz-dot rz-dot--shared"></span> Nodo compartido</p>
+        <p><span class="rz-dot"></span> Nodo de una deriva</p>
+        <p><span class="rz-line"></span> Relación declarada</p>
+        <p><span class="rz-line rz-line--ochre"></span> Co-presencia</p>
+      </div>
+    </aside>
+
+    <div
+      class="rz-map-stage"
+      data-map-stage
+      data-view="red"
+      data-filter="all"
+      data-exp01={exploraciones[0]?.slug}
+      data-exp02={exploraciones[1]?.slug}
+      role="region"
+      aria-label="Mapa interactivo de nodos"
+    >
+      <Cartography cartography={cartography} mode="full" activeId="repeticion" />
+      <p class="rz-map-stage__caption">Fig. 01 · constelación de {nodos.length} nodos. Las líneas marfil siguen las relaciones declaradas; las ocre indican co-presencia entre nodos compartidos.</p>
+    </div>
   </div>
 
-  <BackButton />
-  <SectionRail />
+  <section class="rz-node-index" id="nodos-lista" aria-labelledby="rz-node-index-title">
+    <header class="rz-node-index__head">
+      <p class="rz-label">Archivo de nodos</p>
+      <h2 class="rz-node-index__title" id="rz-node-index-title">Vocabulario compartido</h2>
+      <p class="rz-node-index__lede">Una palabra no es un nodo hasta que aparece en dos cuerpos. Estas son las entradas que el archivo sostiene hoy.</p>
+    </header>
+
+    <div class="rz-node-list">
+      {
+        nodos.map((nodo) => {
+          const linked = linkedFor(nodo.data.title);
+          const id = nodo.slug;
+          return (
+            <article class="rz-node-entry" id={id} data-node-entry={id}>
+              <div class="rz-node-entry__num">{nodo.data.order}</div>
+              <div class="rz-node-entry__body">
+                <h3 class="rz-node-entry__title">{nodo.data.title}</h3>
+                <p class="rz-node-entry__definition">{nodo.data.definition}</p>
+                <p class="rz-node-entry__meta">
+                  {linked.length > 0
+                    ? linked.map((exploracion) => exploracion.data.title).join(' · ')
+                    : 'Todavía sin exploraciones'}
+                </p>
+                <p class="rz-node-entry__links">
+                  {linked.map((exploracion) => (
+                    <a href={withBase(`/${exploracion.slug}/`)}>{exploracion.data.order} · {exploracion.data.title}</a>
+                  ))}
+                </p>
+              </div>
+              <a class="rz-node-entry__map" href="#nodos-lista" data-focus-node={id} aria-label={`Ver ${nodo.data.title} en el mapa`}>↗</a>
+            </article>
+          );
+        })
+      }
+    </div>
+  </section>
 </Base>
+
+<script is:inline src={withBase('/rizoma-map-page.js')} defer></script>

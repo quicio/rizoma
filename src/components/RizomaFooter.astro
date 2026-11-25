@@ -1,0 +1,45 @@
+---
+import { listExploraciones, listNodos } from '../lib/content';
+import { allAnexos } from '../lib/content';
+import { kndlHome, withBase } from '../lib/site';
+import RizomaBrand from './RizomaBrand.astro';
+
+const exploraciones = listExploraciones();
+const nodos = listNodos();
+const anexos = allAnexos();
+const updated = exploraciones
+  .map((item) => item.data.updated)
+  .filter(Boolean)
+  .sort()
+  .at(-1);
+---
+
+<footer class="rz-footer">
+  <div class="rz-footer__top">
+    <RizomaBrand />
+    <p class="rz-footer__line">Exploraciones abiertas de <a href={kndlHome()}>KNDL 000</a>, dentro del ecosistema de <a href="https://quicio.org/">Quicio</a>.</p>
+  </div>
+
+  <div class="rz-footer__grid">
+    <div class="rz-footer__block">
+      <p class="rz-label">Estado</p>
+      <p class="rz-footer__stat"><strong>{String(exploraciones.length).padStart(2, '0')}</strong> exploraciones</p>
+      <p class="rz-footer__stat"><strong>{String(nodos.length).padStart(2, '0')}</strong> nodos</p>
+      <p class="rz-footer__stat"><strong>{String(anexos.length).padStart(2, '0')}</strong> anexos</p>
+    </div>
+    <div class="rz-footer__block">
+      <p class="rz-label">Entradas</p>
+      <a href={withBase('/#exploraciones')}>Índice de exploraciones</a>
+      <a href={withBase('/nodos/')}>Mapa de nodos</a>
+      <a href={withBase('/aparato/')}>Aparato</a>
+    </div>
+    <div class="rz-footer__block">
+      <p class="rz-label">Registro</p>
+      <p>Actualizado {updated ?? '—'}</p>
+      <p>Lectura sin prisa.</p>
+      <p class="rz-footer__mono">RZ / 2026</p>
+    </div>
+  </div>
+
+  <p class="rz-footer__close">El mapa permanece abierto.</p>
+</footer>

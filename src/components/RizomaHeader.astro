@@ -1,0 +1,52 @@
+---
+import { withBase, kndlHome } from '../lib/site';
+import RizomaBrand from './RizomaBrand.astro';
+
+const here = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const mapPath = withBase('/nodos/').replace(/\/+$/, '');
+const aparatoPath = withBase('/aparato/').replace(/\/+$/, '');
+const trayectoriaPath = withBase('/trayectoria/').replace(/\/+$/, '');
+const isMap = here === mapPath || here.startsWith(`${mapPath}/`);
+const isAparato = here === aparatoPath || here.startsWith(`${aparatoPath}/`) || here.startsWith(`${trayectoriaPath}/`);
+const isExploraciones = !isMap && !isAparato;
+---
+
+<header class="rz-header">
+  <div class="rz-header__inner">
+    <RizomaBrand />
+
+    <nav class="rz-nav" aria-label="Navegación principal">
+      <a href={withBase('/#exploraciones')} class:list={{ 'is-active': isExploraciones }} aria-current={isExploraciones ? 'page' : undefined}>Exploraciones</a>
+      <a href={withBase('/nodos/')} class:list={{ 'is-active': isMap }} aria-current={isMap ? 'page' : undefined}>Mapa</a>
+      <a href={withBase('/aparato/')} class:list={{ 'is-active': isAparato }} aria-current={isAparato ? 'page' : undefined}>Aparato</a>
+      <a href={kndlHome()} class="rz-nav__archive">Archivo</a>
+    </nav>
+
+    <a class="rz-search-open" href={withBase('/nodos/')} data-search-open aria-label="Buscar en Rizoma" aria-haspopup="dialog" aria-controls="rz-search">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <circle cx="10.5" cy="10.5" r="6.2" fill="none" stroke="currentColor" stroke-width="1.4"></circle>
+        <path d="m15.2 15.2 4.6 4.6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path>
+      </svg>
+    </a>
+  </div>
+</header>
+
+<dialog class="rz-search" id="rz-search" aria-labelledby="rz-search-title">
+  <div class="rz-search__panel">
+    <div class="rz-search__top">
+      <label class="rz-search__label" for="rz-search-input" id="rz-search-title">Buscar en Rizoma</label>
+      <button class="rz-search__close" type="button" data-search-close aria-label="Cerrar búsqueda">×</button>
+    </div>
+    <input
+      class="rz-search__input"
+      id="rz-search-input"
+      type="search"
+      placeholder="Una idea, un nodo, una exploración…"
+      autocomplete="off"
+      spellcheck="false"
+    />
+    <p class="rz-search__hint">Escribí para filtrar exploraciones, nodos y anexos.</p>
+    <ul class="rz-search__results" data-search-results></ul>
+    <p class="rz-search__empty" data-search-empty hidden>Sin coincidencias. Probá con otra palabra.</p>
+  </div>
+</dialog>

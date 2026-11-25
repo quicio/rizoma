@@ -1,8 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import Breadcrumb from '../../../components/Breadcrumb.astro';
-import BackButton from '../../../components/BackButton.astro';
-import SectionRail from '../../../components/SectionRail.astro';
 import { listAnexos, listExploraciones, getExploracion } from '../../../lib/content';
 import { loadAnexoTipos } from '../../../lib/data';
 import { withBase } from '../../../lib/site';
@@ -20,35 +18,48 @@ const tipos = loadAnexoTipos();
 const anexos = exploracion.data.anexos || [];
 ---
 
-<Base title={`Anexos · ${exploracion.data.title}`} description="El aparato de la exploración: objeciones, correcciones, fuentes, conceptos y derivaciones.">
-  <Breadcrumb exploracionUrl={withBase(`/${slug}/`)} />
+<Base
+  title={`Anexos · ${exploracion.data.title}`}
+  description="El aparato de la exploración: objeciones, correcciones, fuentes, conceptos y derivaciones."
+  bodyClass="rizoma rizoma-anexos-page"
+>
+  <div class="rz-node-breadcrumb">
+    <Breadcrumb exploracionUrl={withBase(`/${slug}/`)} exploracionTitle={exploracion.data.title} current="Anexos" />
+  </div>
 
-  <header class="expediente__head">
-    <h1 class="expediente__title">Anexos</h1>
-    <p class="expediente__question">Correcciones, fuentes, conceptos, objeciones y derivaciones.</p>
-    <p class="expediente__meta">
-      <span>Aparato · Exploración {exploracion.data.order}</span>
-      <span>{exploracion.data.title}</span>
-    </p>
+  <header class="rz-page-head">
+    <div class="rz-page-head__mark">
+      <p class="rz-label">Aparato / Exploración {exploracion.data.order}</p>
+      <p class="rz-section-count">{anexos.length} anexos</p>
+    </div>
+    <div class="rz-page-head__body">
+      <h1 class="rz-page-title">Anexos</h1>
+      <p class="rz-page-lede">Correcciones, fuentes, conceptos, objeciones y derivaciones. Cada anexo declara una operación; el tipo se elige por la pregunta que responde.</p>
+    </div>
   </header>
 
-  <div class="expediente expediente--with-margin">
-    <div class="expediente__body reading-body">
-      <p class="anexos-intro">No todo anexo es una errata. Acá viven las correcciones, las fuentes, los conceptos, las objeciones y las derivaciones que no caben en la deriva. Cada anexo declara una operación; el tipo se elige por la pregunta que responde.</p>
-      {exploracion.data.procedencia && <p class="anexos-procedencia">{exploracion.data.procedencia}</p>}
+  <div class="rz-anexos-layout">
+    <div class="rz-anexos-body">
+      <p class="rz-anexos-intro">No todo anexo es una errata. Acá viven las correcciones, las fuentes, los conceptos, las objeciones y las derivaciones que no caben en la deriva.</p>
+      {exploracion.data.procedencia && <p class="rz-anexos-procedencia">{exploracion.data.procedencia}</p>}
 
       {tipos.map((tipo) => {
         const grupo = anexos.filter((anexo) => anexo.tipo === tipo.id);
         if (!grupo.length) return null;
         return (
-          <section class="anexos-grupo" id={tipo.id}>
-            <h2>{tipo.label}</h2>
-            <p class="anexos-grupo__question">{tipo.question}</p>
-            <ul class="anexo-list">
+          <section class="rz-anexos-group" id={tipo.id}>
+            <header class="rz-anexos-group__head">
+              <h2 class="rz-label">{tipo.label}</h2>
+              <p class="rz-anexos-group__question">{tipo.question}</p>
+            </header>
+            <ul class="rz-anexos-list">
               {grupo.map((anexo) => (
                 <li>
-                  <a href={withBase(`/${slug}/anexos/${anexo.url.split('/').filter(Boolean).at(-1)}/`)}>{anexo.title}</a>
-                  {anexo.note && <p>{anexo.note}</p>}
+                  <a href={withBase(`/${slug}/anexos/${anexo.url.split('/').filter(Boolean).at(-1)}/`)}>
+                    <span class="rz-anexos-list__title">{anexo.title}</span>
+                    {anexo.note && <span class="rz-anexos-list__note">{anexo.note}</span>}
+                    <span class="rz-anexos-list__arrow" aria-hidden="true">↗</span>
+                  </a>
                 </li>
               ))}
             </ul>
@@ -56,18 +67,17 @@ const anexos = exploracion.data.anexos || [];
         );
       })}
 
-      <p class="anexos-back"><a href={withBase(`/${slug}/`)}>← Volver a la exploración</a></p>
+      <p class="rz-anexos-back"><a href={withBase(`/${slug}/`)}>← Volver a la exploración</a></p>
     </div>
 
-    <aside class="expediente__margin" aria-label="Ficha del aparato">
-      <section class="expediente__block">
-        <h2 class="expediente__margin-title">Exploración</h2>
-        <p class="anexo__margin-note"><a href={withBase(`/${slug}/`)}>{exploracion.data.title}</a></p>
+    <aside class="rz-anexos-side" aria-label="Ficha del aparato">
+      <section>
+        <p class="rz-label">Exploración</p>
+        <p><a href={withBase(`/${slug}/`)}>{exploracion.data.title}</a></p>
       </section>
-
-      <section class="expediente__block">
-        <h2 class="expediente__margin-title">Tipos</h2>
-        <ul class="anexo-list">
+      <section>
+        <p class="rz-label">Tipos</p>
+        <ul class="rz-apparatus-links">
           {tipos.map((tipo) => {
             const grupo = anexos.filter((anexo) => anexo.tipo === tipo.id);
             return grupo.length ? <li><a href={`#${tipo.id}`}>{tipo.label}</a></li> : null;
@@ -76,7 +86,4 @@ const anexos = exploracion.data.anexos || [];
       </section>
     </aside>
   </div>
-
-  <BackButton />
-  <SectionRail />
 </Base>

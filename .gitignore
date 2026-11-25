@@ -6,3 +6,22 @@ dist/
 .env
 .env.*
 !.env.example
+
+# Impeccable: estado local y artefactos de revisión.
+.impeccable/review/
+.impeccable/mocks/
+.impeccable/questions/
+.impeccable/build/
+.impeccable/critique/
+.impeccable/audit/
+.impeccable/live/
+.impeccable/hook-*
+.impeccable/staleness-check.json
+.impeccable/update-check.json
+.opencode/skills/impeccable/scripts/bin/
+.opencode/skills/impeccable/scripts/data/
+.opencode/skills/impeccable/scripts/*.verified
+.opencode/skills/impeccable/scripts/dl-*
+
+# Skill local de Impeccable; el CLI global y los artefactos de diseño quedan fuera.
+.opencode/skills/impeccable/

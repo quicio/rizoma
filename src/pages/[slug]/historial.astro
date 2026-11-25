@@ -1,8 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
-import BackButton from '../../components/BackButton.astro';
-import SectionRail from '../../components/SectionRail.astro';
 import { listExploraciones, getExploracion } from '../../lib/content';
 import { buildHistory, currentVersion, historyFileFor } from '../../lib/history';
 import { withBase } from '../../lib/site';
@@ -22,7 +20,7 @@ const hitos = doc.data.hitos || [];
 ---
 
 <Base title="Historial de evolución" description={`Versiones de ${doc.data.title}`}>
-  <Breadcrumb exploracionUrl={withBase(`/${slug}/`)} />
+  <Breadcrumb exploracionUrl={withBase(`/${slug}/`)} exploracionTitle={doc.data.title} current="Historial" />
 
   <header class="historia-head">
     <h1 class="historia-head__title">Historial de evolución</h1>
@@ -102,6 +100,4 @@ const hitos = doc.data.hitos || [];
     )}
   </section>
 
-  <BackButton />
-  <SectionRail />
 </Base>

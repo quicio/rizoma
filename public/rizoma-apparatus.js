@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  var details = document.querySelector(".expediente__apparatus-details");
+  var details = document.querySelector(".rz-apparatus-details");
   if (!details) return;
 
   var mobile = window.matchMedia

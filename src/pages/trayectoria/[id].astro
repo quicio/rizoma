@@ -1,8 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
-import BackButton from '../../components/BackButton.astro';
-import SectionRail from '../../components/SectionRail.astro';
 import { loadCartografias, buildCartografia } from '../../lib/data';
 import { kndlHref, withBase } from '../../lib/site';
 
@@ -24,9 +22,9 @@ const cartografia = buildCartografia(raw);
   seoTitle={`Trayectoria · ${id} · KNDL 000`}
   description="Trayectoria revisada del piloto B3.1.1: aceptadas, rechazadas y pendientes."
   noindex
-  bodyClass="reading-poemas reading-rizoma reading-cartografia"
+  bodyClass="rizoma reading-rizoma reading-cartografia"
 >
-  <Breadcrumb />
+  <Breadcrumb current="Trayectoria" />
 
   <header class="cartografia-head">
     <p class="cartografia-eyebrow">Trayectoria · vista de trabajo</p>
@@ -161,6 +159,4 @@ const cartografia = buildCartografia(raw);
     </section>
   )}
 
-  <BackButton />
-  <SectionRail />
 </Base>

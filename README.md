@@ -5,6 +5,7 @@ Sitio independiente de **Rizoma**, la sección de exploraciones abiertas de
 y markdown. Se puede desplegar solo o embeber en kndl000 en `/rizoma/`.
 
 Sitio: **https://rizoma.quicio.org/**
+Identidad: [`DESIGN.md`](DESIGN.md) · decisión: [ADR 0011](docs/adr/ADR-0011-identidad-cartografia-deriva.md)
 Repositorio: [`quicio/rizoma`](https://github.com/quicio/rizoma).
 
 ## Empezar
@@ -55,9 +56,10 @@ src/
     anexos/<slug>/   # anexos y su index.md por exploración
   data/              # presentación, composiciones, trama, cartografías, materiales
   lib/               # markdown, datos, historial y resolución de enlaces
-  components/        # corpus, mapa, diagrama, respiros, rail
-  pages/             # rutas: /, /nodos/, /[slug]/, /[slug]/anexos/..., /trayectoria/[id]/
+  components/        # cabecera, pie, constelación, corpus, diagrama, respiros
+  pages/             # rutas: /, /nodos/, /aparato/, /[slug]/, /[slug]/anexos/..., /trayectoria/[id]/
   styles/style.css   # copia vendorizada de kndl000 (deuda: recortar)
+  styles/rizoma.css  # identidad visual y de interfaz de Rizoma
 docs/                # sistema: ADR, protocolo, taxonomía, punto de entrada
 trabajo/             # proceso editorial: banco, ciclos, adjuntos, lecturas, láminas
 taller/              # backoffice local-first (npm run taller)

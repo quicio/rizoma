@@ -1,14 +1,14 @@
 ---
 import Base from '../layouts/Base.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
-import BackButton from '../components/BackButton.astro';
-import SectionRail from '../components/SectionRail.astro';
 import Corpus from '../components/Corpus.astro';
 import PresentacionMapa from '../components/PresentacionMapa.astro';
 import Diagrama from '../components/Diagrama.astro';
 import Respiro from '../components/Respiro.astro';
-import { getExploracion, listExploraciones } from '../lib/content';
+import Cartography from '../components/Cartography.astro';
+import { getExploracion, listExploraciones, listNodos } from '../lib/content';
 import { buildPresentacion, buildTrayectoria, loadAnexoTipos } from '../lib/data';
+import { buildCartography } from '../lib/cartography';
 import { withBase, rizomaHref } from '../lib/site';
 
 export function getStaticPaths() {
@@ -18,11 +18,14 @@ export function getStaticPaths() {
 const { slug } = Astro.props;
 const doc = getExploracion(slug);
 if (!doc) throw new Error(`Exploración inexistente: ${slug}`);
+const data = doc.data;
 
 const presentacion = buildPresentacion(doc);
 const trayectoria = buildTrayectoria(doc);
 const tipos = loadAnexoTipos();
 const exploraciones = listExploraciones();
+const nodos = listNodos();
+const cartography = buildCartography(exploraciones, nodos);
 
 const chunks = doc.html.split('<h2');
 const intro = chunks[0];
@@ -32,11 +35,11 @@ const sections = chunks.slice(1).map((chunk) => ({
 }));
 
 function corpusFor(sectionId: string, html: string): string[] {
-  if (doc.data.corpus_secciones?.length) {
-    const map = doc.data.corpus_secciones.find((item) => item.seccion === sectionId);
+  if (data.corpus_secciones?.length) {
+    const map = data.corpus_secciones.find((item) => item.seccion === sectionId);
     return map?.piezas ?? [];
   }
-  return (doc.data.corpus || []).filter((item) => html.includes(item.url)).map((item) => item.url);
+  return (data.corpus || []).filter((item) => html.includes(item.url)).map((item) => item.url);
 }
 
 const anexos = doc.data.anexos || [];
@@ -44,29 +47,63 @@ const relacionadas = (doc.data.relacionadas || []).map((url) => ({
   url,
   title: exploraciones.find((item) => item.data.title && url.includes(item.slug))?.data.title ?? url,
 }));
+const order = String(doc.data.order ?? '').padStart(2, '0');
 ---
 
-<Base title={doc.data.title} description={doc.data.summary || doc.data.question}>
-  <Breadcrumb />
+<Base title={doc.data.title} description={doc.data.summary || doc.data.question} bodyClass="rizoma rizoma-node-page">
+  <div class="rz-node-breadcrumb">
+    <Breadcrumb exploracionUrl={withBase('/#exploraciones')} exploracionTitle="Exploraciones" current={doc.data.title} />
+  </div>
 
-  <header class="expediente__head">
-    <h1 class="expediente__title">{doc.data.title}</h1>
-    {doc.data.question && <p class="expediente__question">{doc.data.question}</p>}
-    {doc.data.summary && <p class="expediente__summary">{doc.data.summary}</p>}
-    <p class="expediente__meta">
-      <span>exploración <span class="expediente__meta-order">{doc.data.order}</span></span>
-      <span>{doc.data.status}</span>
-      {doc.data.fields && <span>{doc.data.fields.join(' · ')}</span>}
-      {doc.data.updated && <span>actualizado {doc.data.updated}</span>}
-    </p>
+  <header class="rz-node-head">
+    <div class="rz-node-head__main">
+      <p class="rz-label">Nodo {order} / Exploración</p>
+      <h1 class="rz-node-title">{doc.data.title}</h1>
+      {doc.data.question && <p class="rz-node-question">{doc.data.question}</p>}
+      {doc.data.summary && <p class="rz-node-summary">{doc.data.summary}</p>}
+    </div>
+
+    <aside class="rz-node-ficha" aria-label="Ficha de la exploración">
+      <dl class="rz-ficha">
+        <div><dt>Conexiones</dt><dd>{doc.data.nodos?.length ?? 0} nodos</dd></div>
+        <div><dt>Corpus</dt><dd>{doc.data.corpus?.length ?? 0} piezas</dd></div>
+        <div><dt>Estado</dt><dd>{doc.data.status ?? 'abierta'}</dd></div>
+        <div><dt>Actualizado</dt><dd>{doc.data.updated ?? '—'}</dd></div>
+      </dl>
+      <div class="rz-mini-map" aria-hidden="true">
+        <Cartography cartography={cartography} mode="mini" activeId="repeticion" />
+      </div>
+    </aside>
   </header>
 
-  <PresentacionMapa presentacion={presentacion} />
+  <div class="rz-node-layout">
+    <aside class="rz-node-rail">
+      <PresentacionMapa presentacion={presentacion} />
+      {
+        doc.data.nodos?.length ? (
+          <div class="rz-node-rail__block">
+            <p class="rz-label">Nodos</p>
+            <ul class="rz-node-rail__links">
+              {doc.data.nodos.map((nodo) => (
+                <li>
+                  <a href={`${withBase('/nodos/')}#${nodo.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}>
+                    {nodo}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null
+      }
+      <div class="rz-node-rail__block">
+        <p class="rz-label">Aparato</p>
+        <a class="rz-text-link" href="#aparato">Corpus y versiones <span aria-hidden="true">↓</span></a>
+      </div>
+    </aside>
 
-  <div class="expediente">
-    <div class="expediente__body reading-body">
-      <div class="expediente__intro" id="introduccion">
-        <p class="expediente__intro-eyebrow">Introducción</p>
+    <div class="rz-node-body">
+      <div class="rz-node-intro" id="introduccion">
+        <p class="rz-label">Introducción</p>
         <Fragment set:html={intro} />
       </div>
 
@@ -78,13 +115,13 @@ const relacionadas = (doc.data.relacionadas || []).map((url) => ({
             <>
               {presentacion.diagrama?.antes_de === section.id && <Diagrama diagrama={presentacion.diagrama} />}
               {respiros.map((respiro) => <Respiro respiro={respiro} />)}
-              <section class:list={['expediente__section', { 'expediente__section--with-corpus': urls.length > 0 }]}>
-                <div class="expediente__section-body">
+              <section class:list={['rz-node-section', { 'rz-node-section--with-corpus': urls.length > 0 }]}>
+                <div class="rz-node-section__body">
                   <Fragment set:html={section.html} />
                 </div>
                 {urls.length > 0 && (
-                  <aside class="expediente__section-corpus" aria-label="Corpus de esta sección">
-                    <p class="expediente__section-corpus-label">Corpus</p>
+                  <aside class="rz-node-section__corpus" aria-label="Corpus de esta sección">
+                    <p class="rz-label">Corpus</p>
                     <Corpus items={doc.data.corpus} only={urls} compact />
                   </aside>
                 )}
@@ -93,51 +130,54 @@ const relacionadas = (doc.data.relacionadas || []).map((url) => ({
           );
         })
       }
+
+      <p class="rz-node-end" aria-hidden="true"><span>Fin de la deriva</span></p>
     </div>
   </div>
 
-  <p class="expediente__end"><span>Fin de la deriva</span></p>
-
-  <section class="expediente__apparatus" aria-labelledby="expediente-apparatus-title">
-    <header class="expediente__apparatus-head">
-      <h2 class="expediente__apparatus-title" id="expediente-apparatus-title">Aparato</h2>
-      <p class="expediente__apparatus-intro">Las obras que sostienen la deriva, el vocabulario que comparte y las huellas de su edición.</p>
+  <section class="rz-node-apparatus" id="aparato" aria-labelledby="rz-apparatus-title">
+    <header class="rz-node-apparatus__head">
+      <p class="rz-label">Aparato</p>
+      <h2 class="rz-node-apparatus__title" id="rz-apparatus-title">Lo que sostiene la deriva.</h2>
+      <p class="rz-node-apparatus__intro">Las obras que sostienen la exploración, el vocabulario que comparte y las huellas de su edición.</p>
     </header>
 
-    <details class="expediente__apparatus-details" open={presentacion.aparato_abierto} data-keep-closed={!presentacion.aparato_abierto ? '' : undefined}>
-      <summary class="expediente__apparatus-summary">
-        <span class="expediente__apparatus-summary-label">Corpus, nodos y versiones</span>
-        <span class="expediente__apparatus-summary-count">
+    <details class="rz-apparatus-details" open={presentacion.aparato_abierto} data-keep-closed={!presentacion.aparato_abierto ? '' : undefined}>
+      <summary class="rz-apparatus-summary">
+        <span>Corpus, nodos y versiones</span>
+        <span class="rz-apparatus-summary__count">
           {doc.data.corpus?.length ?? 0} piezas · {doc.data.nodos?.length ?? 0} nodos{anexos.length ? ` · ${anexos.length} anexos` : ''}
         </span>
       </summary>
 
-      <div class="expediente__apparatus-grid">
-        <div class="expediente__apparatus-main">
+      <div class="rz-apparatus-grid">
+        <div class="rz-apparatus-main">
           {doc.data.corpus?.length ? (
-            <section class="expediente__apparatus-block">
-              <h3 class="expediente__apparatus-block-title">Corpus</h3>
+            <section class="rz-apparatus-block">
+              <h3 class="rz-apparatus-block__title">Corpus</h3>
               <Corpus items={doc.data.corpus} />
             </section>
           ) : null}
         </div>
 
-        <div class="expediente__apparatus-side">
+        <div class="rz-apparatus-side">
           {doc.data.nodos?.length ? (
-            <section class="expediente__apparatus-block">
-              <h3 class="expediente__apparatus-block-title">Nodos</h3>
-              <ul class="expediente__nodos">
+            <section class="rz-apparatus-block">
+              <h3 class="rz-apparatus-block__title">Nodos</h3>
+              <ul class="rz-apparatus-links">
                 {doc.data.nodos.map((nodo) => (
-                  <li><a href={`${withBase('/nodos/')}#${nodo.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}>{nodo}</a></li>
+                  <li>
+                    <a href={`${withBase('/nodos/')}#${nodo.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}>{nodo}</a>
+                  </li>
                 ))}
               </ul>
             </section>
           ) : null}
 
           {relacionadas.length ? (
-            <section class="expediente__apparatus-block">
-              <h3 class="expediente__apparatus-block-title">Relacionadas</h3>
-              <ul class="expediente__related">
+            <section class="rz-apparatus-block">
+              <h3 class="rz-apparatus-block__title">Relacionadas</h3>
+              <ul class="rz-apparatus-links">
                 {relacionadas.map((item) => (
                   <li><a href={rizomaHref(item.url)}>{item.title}</a></li>
                 ))}
@@ -146,15 +186,15 @@ const relacionadas = (doc.data.relacionadas || []).map((url) => ({
           ) : null}
 
           {anexos.length ? (
-            <section class="expediente__apparatus-block">
-              <h3 class="expediente__apparatus-block-title">Anexos</h3>
+            <section class="rz-apparatus-block">
+              <h3 class="rz-apparatus-block__title">Anexos</h3>
               {tipos.map((tipo) => {
                 const grupo = anexos.filter((anexo) => anexo.tipo === tipo.id);
                 if (!grupo.length) return null;
                 return (
-                  <>
-                    <p class="anexo-list__label">{tipo.label}</p>
-                    <ul class="anexo-list">
+                  <Fragment>
+                    <p class="rz-apparatus-label">{tipo.label}</p>
+                    <ul class="rz-apparatus-links">
                       {grupo.map((anexo) => (
                         <li>
                           <a href={rizomaHref(anexo.url)}>{anexo.title}</a>
@@ -162,43 +202,46 @@ const relacionadas = (doc.data.relacionadas || []).map((url) => ({
                         </li>
                       ))}
                     </ul>
-                  </>
+                  </Fragment>
                 );
               })}
-              <a class="expediente__history-link" href={`${withBase(`/${doc.slug}/anexos/`)}`}>Ver el aparato completo →</a>
+              <a class="rz-text-link" href={`${withBase(`/${doc.slug}/anexos/`)}`}>Ver el aparato completo <span aria-hidden="true">→</span></a>
             </section>
           ) : null}
 
           {trayectoria?.cartografia ? (
-            <section class="expediente__apparatus-block">
-              <h3 class="expediente__apparatus-block-title">Trayectoria</h3>
+            <section class="rz-apparatus-block">
+              <h3 class="rz-apparatus-block__title">Trayectoria</h3>
               {trayectoria.frentes.length > 0 && (
-                <p class="expediente__trayectoria-front">
+                <p class="rz-apparatus-note">
                   Frente: {trayectoria.frentes.map((frente) => frente.nombre_canonico).join(' · ')}
                 </p>
               )}
-              <a class="expediente__history-link" href={withBase(`/trayectoria/${trayectoria.cartografia.id}/`)}>Ver trayectoria →</a>
+              <a class="rz-text-link" href={withBase(`/trayectoria/${trayectoria.cartografia.id}/`)}>Ver trayectoria <span aria-hidden="true">→</span></a>
             </section>
           ) : null}
 
-          <section class="expediente__apparatus-block">
-            <h3 class="expediente__apparatus-block-title">Evolución</h3>
-            <a class="expediente__history-link" href={`${withBase(`/${doc.slug}/historial/`)}`}>Ver historial de versiones →</a>
+          <section class="rz-apparatus-block">
+            <h3 class="rz-apparatus-block__title">Evolución</h3>
+            <a class="rz-text-link" href={`${withBase(`/${doc.slug}/historial/`)}`}>Ver historial de versiones <span aria-hidden="true">→</span></a>
           </section>
         </div>
       </div>
 
       {doc.data.procedencia && (
-        <details class="expediente__apparatus-colophon">
+        <details class="rz-apparatus-colophon">
           <summary>Procedencia</summary>
-          <p class="expediente__procedencia">{doc.data.procedencia}</p>
+          <p>{doc.data.procedencia}</p>
         </details>
       )}
     </details>
   </section>
 
-  <BackButton />
-  <SectionRail />
+  <nav class="rz-node-next" aria-label="Continuar la lectura">
+    <a href={withBase('/#exploraciones')}>← Volver al índice</a>
+    <a href={withBase('/nodos/')}>Abrir el mapa de nodos →</a>
+  </nav>
 </Base>
 
 <script is:inline src={withBase('/rizoma-apparatus.js')} defer></script>
+<script is:inline src={withBase('/rizoma-map.js')} defer></script>

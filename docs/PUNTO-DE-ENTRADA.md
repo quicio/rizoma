@@ -84,6 +84,7 @@ Reglas:
 | [0008](adr/ADR-0008-extraccion-de-rizoma.md) | Extracción a repo Astro independiente, embebido en kndl por artefacto estático. |
 | [0009](adr/ADR-0009-separacion-de-contenido-proceso-sistema.md) | Contenido público, proceso editorial, sistema y datos en capas separadas. |
 | [0010](adr/ADR-0010-dominio-quicio-org.md) | Dominio quicio.org y subdominios: kndl, rizoma y semina. |
+| [0011](adr/ADR-0011-identidad-cartografia-deriva.md) | Identidad visual y experiencia de cartografía de deriva. |
 
 ## Nueva exploración
 
@@ -156,8 +157,10 @@ Público:
 - `src/content/exploraciones/` — exploraciones públicas.
 - `src/content/nodos/` — vocabulario compartido.
 - `src/content/anexos/<exploración>/` — aparato de cada exploración.
-- `src/pages/` — rutas Astro; `src/components/` — mapa, diagrama, corpus y respiros.
-- `src/lib/` — carga de markdown, presentación, trayectoria e historial.
+- `src/pages/` — rutas Astro; incluye `/aparato/` como índice global de anexos.
+- `src/components/` — cabecera, pie, constelación, diagrama, corpus y respiros.
+- `src/lib/` — carga de markdown, presentación, cartografía, trayectoria e historial.
+- `src/styles/rizoma.css` — capa de identidad visual; `style.css` es la hoja heredada.
 
 Proceso editorial (no publicado):
 

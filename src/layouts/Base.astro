@@ -1,6 +1,9 @@
 ---
 import '../styles/style.css';
+import '../styles/rizoma.css';
 import { SITE, absoluteUrl, withBase } from '../lib/site';
+import RizomaHeader from '../components/RizomaHeader.astro';
+import RizomaFooter from '../components/RizomaFooter.astro';
 
 interface Props {
   title?: string;
@@ -14,13 +17,19 @@ const {
   title,
   description = SITE.description,
   noindex = false,
-  bodyClass = 'reading-poemas reading-rizoma',
+  bodyClass = 'reading-rizoma',
   seoTitle,
 } = Astro.props;
 
 const pageTitle = seoTitle || (title ? `${title} · ${SITE.title}` : SITE.title);
 const canonical = absoluteUrl(Astro.url.pathname);
 const ogType = 'website';
+const classes = bodyClass
+  .split(/\s+/)
+  .filter(Boolean)
+  .includes('rizoma')
+  ? bodyClass
+  : `${bodyClass} rizoma`;
 ---
 
 <!doctype html>
@@ -33,6 +42,7 @@ const ogType = 'website';
     {noindex && <meta name="robots" content="noindex, nofollow" />}
     <meta name="description" content={description} />
     <meta name="author" content={SITE.author} />
+    <meta name="theme-color" content="#171614" />
     <link rel="canonical" href={canonical} />
     <meta property="og:locale" content={SITE.locale} />
     <meta property="og:site_name" content={SITE.title} />
@@ -43,9 +53,12 @@ const ogType = 'website';
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
-    <link rel="icon" type="image/x-icon" href={withBase('/favicon.ico')} />
+    <link rel="icon" type="image/svg+xml" href={withBase('/media/rizoma/glyph.svg')} />
+    <link rel="alternate icon" type="image/x-icon" href={withBase('/favicon.ico')} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Lato:ital,wght@0,300;0,400;0,700;1,400&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;1,400&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300..700;1,400&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..600&family=JetBrains+Mono:wght@300;400;500&display=swap"
       rel="stylesheet"
     />
     {
@@ -62,9 +75,13 @@ const ogType = 'website';
       )
     }
   </head>
-  <body class={bodyClass}>
-    <main class="reading-main">
+  <body class={classes} data-base={withBase('/')} style={`--rz-terrain: url("${withBase('/assets/plates/terrain.webp')}")`}>
+    <a class="rz-skip" href="#contenido">Saltar al contenido</a>
+    <RizomaHeader />
+    <main class="reading-main rz-main" id="contenido">
       <slot />
     </main>
+    <RizomaFooter />
+    <script is:inline src={withBase('/rizoma-search.js')} defer></script>
   </body>
 </html>

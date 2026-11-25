@@ -1,0 +1,77 @@
+---
+import Base from '../layouts/Base.astro';
+import { allAnexos, listExploraciones, exploracionSlugFromUrl } from '../lib/content';
+import { loadAnexoTipos } from '../lib/data';
+import { withBase } from '../lib/site';
+
+const exploraciones = listExploraciones();
+const tipos = loadAnexoTipos();
+const anexos = allAnexos();
+
+const groups = exploraciones.map((exploracion) => {
+  const items = anexos
+    .filter((anexo) => exploracionSlugFromUrl(anexo.data.exploracion as string | undefined) === exploracion.slug)
+    .map((anexo) => ({
+      title: anexo.data.title,
+      slug: anexo.slug,
+      tipo: anexo.data.tipo,
+      tipoLabel: tipos.find((tipo) => tipo.id === anexo.data.tipo)?.label ?? 'Anexo',
+      estado: anexo.data.estado ?? 'abierto',
+      date: anexo.data.date,
+      href: withBase(`/${exploracion.slug}/anexos/${anexo.slug}/`),
+    }));
+  return { exploracion, items };
+});
+
+const total = anexos.length;
+---
+
+<Base
+  title="Aparato"
+  description="El aparato de Rizoma: correcciones, fuentes, conceptos, objeciones y derivaciones que sostienen las exploraciones abiertas."
+  bodyClass="rizoma rizoma-apparatus-page"
+>
+  <header class="rz-page-head">
+    <div class="rz-page-head__mark">
+      <p class="rz-label">Aparato / {String(total).padStart(2, '0')} anexos</p>
+      <p class="rz-section-count">{exploraciones.length} derivas · 5 operaciones</p>
+    </div>
+    <div class="rz-page-head__body">
+      <h1 class="rz-page-title">Aparato</h1>
+      <p class="rz-page-lede">Correcciones, fuentes, conceptos, objeciones y derivaciones. No todo anexo es una errata: cada uno declara una operación sobre la investigación y conserva su procedencia.</p>
+    </div>
+    <div class="rz-page-head__side">
+      <p class="rz-label">Tipos</p>
+      <ul class="rz-type-list">
+        {tipos.map((tipo) => (
+          <li><span>{tipo.label}</span><em>{tipo.question}</em></li>
+        ))}
+      </ul>
+    </div>
+  </header>
+
+  <div class="rz-apparatus-index">
+    {
+      groups.map((group, index) => (
+        <section class="rz-apparatus-group" aria-labelledby={`grupo-${index}`}>
+          <header class="rz-apparatus-group__head">
+            <p class="rz-label">Exploración {group.exploracion.data.order} · {group.items.length} anexos</p>
+            <h2 id={`grupo-${index}`}><a href={withBase(`/${group.exploracion.slug}/`)}>{group.exploracion.data.title}</a></h2>
+          </header>
+          <ul class="rz-apparatus-entries">
+            {group.items.map((item) => (
+              <li>
+                <a href={item.href}>
+                  <span class="rz-apparatus-entries__type">{item.tipoLabel}</span>
+                  <span class="rz-apparatus-entries__title">{item.title}</span>
+                  <span class="rz-apparatus-entries__meta">{item.estado}{item.date ? ` · ${item.date}` : ''}</span>
+                  <span class="rz-apparatus-entries__arrow" aria-hidden="true">↗</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
+</Base>

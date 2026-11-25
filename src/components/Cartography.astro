@@ -1,0 +1,133 @@
+---
+import { withBase } from '../lib/site';
+import type { Cartography } from '../lib/cartography';
+
+interface Props {
+  cartography: Cartography;
+  mode?: 'hero' | 'full' | 'mini';
+  activeId?: string;
+  class?: string;
+}
+
+const { cartography, mode = 'full', activeId = 'repeticion', class: className } = Astro.props;
+const { nodes, edges, width, height } = cartography;
+const anchors = nodes.filter((node) => node.id.startsWith('exp-'));
+const regular = nodes.filter((node) => !node.id.startsWith('exp-'));
+
+function anchorFor(x: number): 'start' | 'end' | 'middle' {
+  if (x < 280) return 'start';
+  if (x > 720) return 'end';
+  return 'middle';
+}
+
+function labelX(node: (typeof nodes)[number]): number {
+  if (node.x < 280) return node.x + node.r + 8;
+  if (node.x > 720) return node.x - node.r - 8;
+  return node.x;
+}
+
+function labelY(node: (typeof nodes)[number]): number {
+  if (node.id === 'repeticion' || node.id === 'memoria') return node.y + node.r + 17;
+  if (node.id === 'redundancia' || node.id === 'archivo') return node.y - node.r - 11;
+  if (node.id === 'automatizacion') return node.y - node.r - 11;
+  if (node.x > 280 && node.x < 720) return node.y - node.r - 9;
+  return node.y + 4;
+}
+---
+
+<svg
+  class:list={['rz-map', `rz-map--${mode}`, className]}
+  viewBox={`0 0 ${width} ${height}`}
+  role="group"
+  aria-labelledby={`rz-map-title-${mode}`}
+  data-cartography
+>
+  <title id={`rz-map-title-${mode}`}>Mapa de nodos de Rizoma: {cartography.counts.nodos} conceptos, {cartography.counts.shared} compartidos entre {cartography.counts.exploraciones} exploraciones.</title>
+
+  <g class="rz-map__ornament" aria-hidden="true">
+    <circle class="rz-map__orbit" cx="500" cy="340" r="286"></circle>
+    <circle class="rz-map__orbit rz-map__orbit--inner" cx="500" cy="340" r="192"></circle>
+    <path class="rz-map__arc" d="M 196 640 A 420 420 0 0 1 892 96"></path>
+    <g class="rz-map__cross">
+      <path d="M 92 210h18M 101 201v18"></path>
+      <path d="M 884 560h18M 893 551v18"></path>
+      <path d="M 380 78h14M 387 71v14"></path>
+      <path d="M 760 620h14M 767 613v14"></path>
+    </g>
+    <g class="rz-map__ticks">
+      <path d="M 60 340h24M 72 328v24"></path>
+      <path d="M 940 340h-24M 928 328v24"></path>
+    </g>
+  </g>
+
+  <g class="rz-map__edges">
+    {
+      edges.map((edge) => (
+        <path
+          class:list={['rz-map__edge', `rz-map__edge--${edge.kind}`]}
+          d={edge.path}
+          pathLength="1"
+          data-from={edge.from}
+          data-to={edge.to}
+        />
+      ))
+    }
+  </g>
+
+  <g class="rz-map__nodes">
+    {
+      anchors.map((node) => (
+        <a
+          class="rz-map__node rz-map__node--anchor"
+          href={mode === 'full' ? withBase(`/${node.id === 'exp-01' ? 'que-se-conserva-cuando-algo-se-repite' : 'archivo'}/`) : withBase('/nodos/')}
+          data-node={node.id}
+          data-title={`Exploración ${node.order}: ${node.title}`}
+          data-definition={node.title}
+          data-exploraciones={node.exploraciones.join(',')}
+          tabindex={mode === 'mini' ? -1 : undefined}
+          aria-label={`Exploración ${node.order}: ${node.title}`}
+        >
+          <circle class="rz-map__halo" cx={node.x} cy={node.y} r={node.r + 12}></circle>
+          <circle class="rz-map__dot" cx={node.x} cy={node.y} r={node.r}></circle>
+          <text class="rz-map__anchor-label" x={node.x} y={node.y + 4} text-anchor="middle">{node.order}</text>
+        </a>
+      ))
+    }
+
+    {
+      regular.map((node) => {
+        const showLabel = mode === 'full' || (mode === 'hero' && (node.shared || node.active));
+        return (
+          <a
+            class:list={[
+              'rz-map__node',
+              { 'is-active': node.id === activeId, 'is-shared': node.shared, 'is-unique': !node.shared },
+            ]}
+            href={withBase(`/nodos/#${node.id}`)}
+            data-node={node.id}
+            data-title={node.title}
+            data-definition={node.definition ?? ''}
+            data-exploraciones={node.exploraciones.join(',')}
+            tabindex={mode === 'mini' ? -1 : undefined}
+            aria-label={`${node.title}${node.shared ? ', nodo compartido' : ''}`}
+          >
+            <circle class="rz-map__hit" cx={node.x} cy={node.y} r={Math.max(16, node.r + 10)}></circle>
+            <circle class="rz-map__dot" cx={node.x} cy={node.y} r={node.r}></circle>
+            {node.active && <circle class="rz-map__pulse" cx={node.x} cy={node.y} r={node.r + 7}></circle>}
+            {showLabel && (
+              <text
+                class="rz-map__label"
+                x={labelX(node)}
+                y={labelY(node)}
+                text-anchor={anchorFor(node.x)}
+              >
+                {node.title}
+              </text>
+            )}
+            <title>{node.title}</title>
+          </a>
+        );
+      })
+    }
+  </g>
+</svg>
