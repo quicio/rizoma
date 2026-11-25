@@ -110,10 +110,11 @@ Pages y custom domain propio. `quicio.github.io/quicio/` redirige al apex.
 
 - `quicio.org`, `kndl.quicio.org`, `rizoma.quicio.org` y `semina.quicio.org`
   están publicados con HTTPS.
-- `kndl.quicio.qzz.io` responde 404: falta la Redirect Rule 301.
-- `semina.quicio.qzz.io` sigue sirviendo Semina; el 301 al dominio nuevo queda
-  pendiente.
-- `quicio.qzz.io` y `rizoma.quicio.qzz.io` no tienen registros.
+- `quicio.qzz.io`, `kndl.quicio.qzz.io`, `rizoma.quicio.qzz.io` y
+  `semina.quicio.qzz.io` responden 301 a sus destinos en `quicio.org`.
+- Los redirects viven en el entrypoint de la fase
+  `http_request_dynamic_redirect` de la zona `quicio.qzz.io`.
+- El apex y `rizoma` usan un A proxied de relleno (`192.0.2.1`).
 
 ## Criterio SEO
 
