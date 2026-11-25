@@ -83,6 +83,9 @@ este repo y genera:
 - el bloque de últimas exploraciones del home.
 - redirects de las URLs viejas del embed.
 
+kndl también muestra **“En Rizoma”** en las fichas de las obras citadas: qué
+exploración, sección y anexo las usan.
+
 En CI, kndl hace checkout de `quicio/rizoma` en `rizoma-src`.
 
 ## Desplegar solo
