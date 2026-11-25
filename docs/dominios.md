@@ -18,7 +18,7 @@
 | `rizoma.quicio.qzz.io` | 301 → `https://rizoma.quicio.org` | Redirect Rule |
 | `semina.quicio.qzz.io` | 301 → `https://semina.quicio.org` | Redirect Rule |
 | `quicio.qzz.io` | 301 → `https://quicio.org` | Redirect Rule |
-| `quicio.org` | hub o redirect a `kndl.quicio.org` | a definir |
+| `quicio.org` | sitio de Quicio (`quicio/quicio`) | GitHub Pages |
 
 ## DNS de `quicio.org`
 
@@ -27,6 +27,10 @@ En Cloudflare, **DNS only** (gris, sin proxy):
 ```text
 CNAME kndl    hugomoraga.github.io
 CNAME rizoma  quicio.github.io
+A     @       185.199.108.153
+A     @       185.199.109.153
+A     @       185.199.110.153
+A     @       185.199.111.153
 ```
 
 `semina` no va a GitHub Pages: es una app Next.js/OpenNext detrás de
@@ -86,6 +90,7 @@ configura como segundo custom domain: se resuelve con redirects en Cloudflare.
 ```bash
 gh api -X PUT repos/hugomoraga/kndl000/pages -f cname=kndl.quicio.org
 gh api -X PUT repos/quicio/rizoma/pages -f cname=rizoma.quicio.org
+gh api -X PUT repos/quicio/quicio/pages -f cname=quicio.org
 ```
 
 Si GitHub pide verificación, agregar el TXT
@@ -98,15 +103,17 @@ gh api -X PUT repos/quicio/rizoma/pages -F https_enforced=true
 
 ## Apex `quicio.org`
 
-No hay registros todavía. Dos opciones:
+Vive el sitio de Quicio desde el repo `quicio/quicio`, con A/AAAA de GitHub
+Pages y custom domain propio. `quicio.github.io/quicio/` redirige al apex.
 
-- **Hub**: una página simple con enlaces a kndl, Rizoma y Semina.
-- **Redirect**: `quicio.org` → `https://kndl.quicio.org/`.
+## Estado 2026-11-25
 
-Para GitHub Pages en el apex harían falta los A records
-`185.199.108.153`, `.109.153`, `.110.153` y `.111.153`, más el custom domain
-correspondiente. Si el apex solo redirige, alcanza con Cloudflare Redirect
-Rules.
+- `quicio.org`, `kndl.quicio.org`, `rizoma.quicio.org` y `semina.quicio.org`
+  están publicados con HTTPS.
+- `kndl.quicio.qzz.io` responde 404: falta la Redirect Rule 301.
+- `semina.quicio.qzz.io` sigue sirviendo Semina; el 301 al dominio nuevo queda
+  pendiente.
+- `quicio.qzz.io` y `rizoma.quicio.qzz.io` no tienen registros.
 
 ## Criterio SEO
 
